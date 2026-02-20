@@ -3,5 +3,5 @@ import DemoPage from '@/components/DemoPage';
 
 
 export default function DemoMarinaSilva() {
-  return <DemoPage photographer={demoPhotographers['marina-silva']} />;
+  return <DemoPage photographer={demoPhotographers['marina-silva']} variant="minimalista" />;
 }

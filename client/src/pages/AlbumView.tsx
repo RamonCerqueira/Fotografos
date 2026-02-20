@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Share2, Heart } from 'lucide-react';
 import { useLocation, useRoute } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
@@ -20,7 +20,7 @@ export default function AlbumView() {
     return (
       <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0F0F0F] text-white' : 'bg-white text-[#1A1A1A]'}`}>
         <div className="container text-center">
-          <p className="text-lg mb-6">Álbum não encontrado.</p>
+          <p className="text-lg mb-6">Fotógrafo não encontrado.</p>
           <Button onClick={() => setLocation('/')}>Voltar para a página inicial</Button>
         </div>
       </div>
@@ -33,116 +33,127 @@ export default function AlbumView() {
     return (
       <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0F0F0F] text-white' : 'bg-white text-[#1A1A1A]'}`}>
         <div className="container text-center">
-          <p className="text-lg mb-6">Projeto de portfólio não encontrado.</p>
+          <p className="text-lg mb-6">Álbum não encontrado.</p>
           <Button onClick={() => setLocation(`/demo/${photographer.id}`)}>Voltar para o portfólio</Button>
         </div>
       </div>
     );
   }
 
+  // Generate 12 images for the gallery
   const baseImages = photographer.portfolio.length > 0 ? photographer.portfolio.map((item) => item.imageUrl) : [portfolioItem.imageUrl];
-
   const galleryImages = Array.from({ length: 12 }, (_, index) => ({
     id: `${portfolioItem.id}-${index + 1}`,
     src: baseImages[index % baseImages.length],
     alt: `${portfolioItem.title} - Foto ${index + 1}`,
+    featured: index % 6 === 0 // Highlight every 6th image
   }));
 
   const backgroundClass =
     theme === 'dark'
-      ? 'bg-gradient-to-b from-[#0F0F0F] via-[#050505] to-[#0F0F0F] text-white'
-      : 'bg-gradient-to-b from-white via-[#F9F9F9] to-white text-[#1A1A1A]';
+      ? 'bg-[#0F0F0F] text-white'
+      : 'bg-white text-[#1A1A1A]';
 
   return (
-    <div className={`min-h-screen ${backgroundClass}`}>
-      <div className="container py-16 md:py-24">
+    <div className={`min-h-screen ${backgroundClass} transition-colors duration-500`}>
+      {/* Navigation Bar */}
+      <nav className={`sticky top-0 z-40 backdrop-blur-md border-b ${theme === 'dark' ? 'bg-[#0F0F0F]/80 border-[#2A2A2A]' : 'bg-white/80 border-[#E5E5E5]'}`}>
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 hover:bg-transparent pl-0"
+            onClick={() => setLocation(`/demo/${photographer.id}`)}
+          >
+            <ArrowLeft size={20} />
+            <span className="hidden md:inline">Voltar para o portfólio</span>
+          </Button>
+          
+          <div className="flex items-center gap-4">
+             <div className="text-right hidden sm:block">
+               <p className="text-sm font-bold leading-none">{portfolioItem.title}</p>
+               <p className="text-xs opacity-60 leading-none mt-1">{photographer.name}</p>
+             </div>
+             <Button size="icon" variant="ghost" className="rounded-full">
+               <Heart size={20} />
+             </Button>
+             <Button size="icon" variant="ghost" className="rounded-full">
+               <Share2 size={20} />
+             </Button>
+          </div>
+        </div>
+      </nav>
+
+      <main className="container mx-auto px-4 py-12">
+        {/* Album Header */}
         <motion.div
-          className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
-          initial={{ opacity: 0, y: 20 }}
+          className="max-w-4xl mx-auto text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              className="flex items-center gap-2"
-              onClick={() => setLocation(`/demo/${photographer.id}`)}
-            >
-              <ArrowLeft size={18} />
-              <span>Voltar para o portfólio</span>
-            </Button>
-            <div className="h-6 w-px bg-[#E5E5E5] dark:bg-[#2A2A2A]" />
-            <div>
-              <p className="text-sm uppercase tracking-[0.2em]" style={{ color: photographer.colors.primary }}>
-                Álbum fotográfico
-              </p>
-              <h1 className="text-2xl md:text-3xl font-semibold">{portfolioItem.title}</h1>
-            </div>
-          </div>
-          <div className="text-sm md:text-right">
-            <p className="font-semibold">{photographer.name}</p>
-            <p className={theme === 'dark' ? 'text-[#CCCCCC]' : 'text-[#666666]'}>{photographer.specialty}</p>
-          </div>
+          <span className="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4" 
+            style={{ backgroundColor: `${photographer.colors.primary}20`, color: photographer.colors.primary }}>
+            {portfolioItem.category}
+          </span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">{portfolioItem.title}</h1>
+          <p className="text-lg md:text-xl opacity-70 leading-relaxed max-w-2xl mx-auto">
+            {portfolioItem.description} Capturando a essência de momentos únicos com um olhar {photographer.specialty.toLowerCase()}.
+          </p>
         </motion.div>
 
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.25fr)]">
-          <motion.div
-            className="space-y-6"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <div className="inline-flex items-center rounded-full px-4 py-1 text-xs font-medium" style={{ backgroundColor: `${photographer.colors.primary}15`, color: photographer.colors.primary }}>
-              {portfolioItem.category.toUpperCase()}
-            </div>
-            <p className={`text-base md:text-lg ${theme === 'dark' ? 'text-[#DDDDDD]' : 'text-[#4A4A4A]'}`}>
-              {portfolioItem.description}
-            </p>
-            <p className={`text-sm md:text-base ${theme === 'dark' ? 'text-[#BBBBBB]' : 'text-[#777777]'}`}>
-              Este álbum reúne uma seleção curada de imagens realizadas por {photographer.name}, combinando direção de cena, iluminação e pós-produção para entregar uma narrativa visual coerente e envolvente.
-            </p>
-            <div className={`rounded-2xl p-6 ${theme === 'dark' ? 'bg-[#151515] border border-[#2A2A2A]' : 'bg-white border border-[#E5E5E5]'}`}>
-              <h2 className="text-lg font-semibold mb-3">Sobre o fotógrafo</h2>
-              <p className={`text-sm md:text-base mb-3 ${theme === 'dark' ? 'text-[#CCCCCC]' : 'text-[#666666]'}`}>
-                {photographer.description}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="font-semibold mb-1">Especialidade</p>
-                  <p className={theme === 'dark' ? 'text-[#DDDDDD]' : 'text-[#555555]'}>{photographer.specialty}</p>
-                </div>
-                <div>
-                  <p className="font-semibold mb-1">Estilo visual</p>
-                  <p className={theme === 'dark' ? 'text-[#DDDDDD]' : 'text-[#555555]'}>Inspirado no layout {photographer.specialty.toLowerCase()}</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15 }}
-          >
-            {galleryImages.map((image, index) => (
-              <div
-                key={image.id}
-                className={`group relative overflow-hidden rounded-2xl ${
-                  index % 5 === 0 ? 'md:row-span-2 aspect-[3/4]' : 'aspect-[4/3]'
-                } ${theme === 'dark' ? 'bg-[#151515]' : 'bg-[#F5F5F5]'}`}
-              >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </div>
-            ))}
-          </motion.div>
+        {/* Info Cards */}
+        <div className="grid md:grid-cols-3 gap-8 mb-20 max-w-5xl mx-auto">
+           <div className={`p-6 rounded-2xl ${theme === 'dark' ? 'bg-[#151515]' : 'bg-gray-50'}`}>
+             <h3 className="font-bold mb-2">Sobre o Serviço</h3>
+             <p className="text-sm opacity-70">Sessão fotográfica completa com direção de arte e pós-produção profissional.</p>
+           </div>
+           <div className={`p-6 rounded-2xl ${theme === 'dark' ? 'bg-[#151515]' : 'bg-gray-50'}`}>
+             <h3 className="font-bold mb-2">O Fotógrafo</h3>
+             <p className="text-sm opacity-70">{photographer.description}</p>
+           </div>
+           <div className={`p-6 rounded-2xl ${theme === 'dark' ? 'bg-[#151515]' : 'bg-gray-50'}`}>
+             <h3 className="font-bold mb-2">Detalhes Técnicos</h3>
+             <p className="text-sm opacity-70">12 fotos em alta resolução. Edição fine art. Entrega digital.</p>
+           </div>
         </div>
-      </div>
+
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {galleryImages.map((image, index) => (
+            <motion.div
+              key={image.id}
+              className={`relative group overflow-hidden rounded-xl cursor-pointer ${image.featured ? 'md:col-span-2 md:row-span-2' : ''}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ y: -5 }}
+            >
+              <div className="aspect-[4/3] w-full h-full">
+                 <img
+                   src={image.src}
+                   alt={image.alt}
+                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                   loading="lazy"
+                 />
+              </div>
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                 <Button variant="secondary" className="scale-90 group-hover:scale-100 transition-transform">
+                   Ver Foto
+                 </Button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Footer CTA */}
+        <div className="mt-24 text-center">
+           <p className="mb-6 opacity-60">Gostou do que viu?</p>
+           <Button size="lg" className="rounded-full px-8" style={{ backgroundColor: photographer.colors.primary, color: 'white' }}>
+             Solicitar Orçamento
+           </Button>
+        </div>
+      </main>
     </div>
   );
 }
-

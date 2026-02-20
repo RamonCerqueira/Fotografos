@@ -39,7 +39,12 @@ function Router() {
 //   to keep consistent foreground/background color across components
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
+import { useLocation } from "wouter";
+
 function App() {
+  const [location] = useLocation();
+  const isDemoPage = location.startsWith('/demo');
+
   return (
     <ErrorBoundary>
       <LanguageThemeProvider>
@@ -49,8 +54,8 @@ function App() {
         >
           <TooltipProvider>
             <Toaster />
-            <Navbar />
-            <div className="pt-16">
+            {!isDemoPage && <Navbar />}
+            <div className={!isDemoPage ? "pt-16" : ""}>
               <Router />
             </div>
           </TooltipProvider>
