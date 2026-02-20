@@ -295,110 +295,247 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
   // Full-width, bold fonts, dark mode, paralaxe.
   const renderModern = () => (
     <div className={`min-h-screen font-sans ${theme === 'dark' ? 'bg-[#050505] text-white' : 'bg-white text-black'}`}>
+      
+      {/* Menu Overlay Fullscreen */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: '-100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '-100%' }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[100] bg-black text-white flex flex-col justify-center items-center"
+          >
+            <Button 
+              variant="ghost" 
+              className="absolute top-8 right-8 text-white hover:bg-white/20 rounded-full p-4 h-auto w-auto"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <X size={48} />
+            </Button>
+            <nav className="flex flex-col gap-8 text-center">
+              {[
+                { label: 'Home', id: 'home' },
+                { label: 'Sobre', id: 'sobre' },
+                { label: 'Portfólio', id: 'portfolio' },
+                { label: 'Serviços', id: 'servicos' },
+                { label: 'Contato', id: 'contato' }
+              ].map((item, index) => (
+                <motion.a 
+                  key={item.label} 
+                  href={`#${item.id}`}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  className="text-6xl md:text-8xl font-black hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all uppercase tracking-tighter"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </motion.a>
+              ))}
+            </nav>
+            
+            <div className="absolute bottom-12 flex gap-8">
+              {socialLinks.map((social, i) => (
+                <a key={i} href={social.href} className="text-gray-400 hover:text-white transition-colors">
+                  <social.icon size={24} />
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6 md:p-10 mix-blend-difference text-white">
-        <span className="text-2xl font-bold tracking-tighter">{photographer.name}</span>
-        <Button variant="outline" className="rounded-full border-white text-white hover:bg-white hover:text-black transition-colors">
+        <span className="text-2xl font-bold tracking-tighter uppercase">{photographer.name}</span>
+        <Button 
+          variant="outline" 
+          className="rounded-full border-white text-white bg-transparent hover:bg-white hover:text-black transition-all px-8 py-6 text-sm tracking-widest uppercase font-bold"
+          onClick={() => setIsMenuOpen(true)}
+        >
           Menu
         </Button>
       </nav>
 
       {/* Hero Moderno */}
-      <section className="h-screen relative flex items-center px-6 md:px-20 overflow-hidden">
+      <section id="home" className="h-screen relative flex items-center px-6 md:px-20 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {photographer.heroImage && (
-            <img src={photographer.heroImage} alt="Hero" className="w-full h-full object-cover opacity-60" />
+          {photographer.heroImage ? (
+            <motion.div 
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+              className="w-full h-full"
+            >
+              <img src={photographer.heroImage} alt="Hero" className="w-full h-full object-cover" />
+            </motion.div>
+          ) : (
+            <div className="w-full h-full bg-gray-900" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
         </div>
         
-        <div className="relative z-10 max-w-4xl">
+        <div className="relative z-10 max-w-6xl pt-20">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: "100px" }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="h-[2px] bg-white mb-8"
+            style={{ backgroundColor: photographer.colors.primary }}
+          />
           <motion.h1 
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-7xl md:text-9xl font-bold leading-none tracking-tighter mb-6 text-white"
+            className="text-6xl md:text-8xl lg:text-9xl font-bold leading-none tracking-tighter mb-8 text-white uppercase mix-blend-overlay"
           >
-            CAPTURING<br/>
-            <span style={{ color: photographer.colors.primary }}>REALITY.</span>
+            {photographer.tagline.split(' ').slice(0, 2).join(' ')}<br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
+              {photographer.tagline.split(' ').slice(2).join(' ')}
+            </span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-xl md:text-2xl text-gray-300 max-w-xl"
+            className="text-xl md:text-2xl text-gray-200 max-w-xl font-light tracking-wide leading-relaxed"
           >
             {photographer.description}
           </motion.p>
         </div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white flex flex-col items-center gap-2"
+        >
+          <span className="text-xs uppercase tracking-[0.2em] opacity-70">Scroll Down</span>
+          <ChevronDown className="animate-bounce" />
+        </motion.div>
       </section>
 
       {/* About Moderno */}
-      <section className="py-32 px-6 md:px-20 bg-zinc-100 dark:bg-zinc-900/50">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-           <div>
-             <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-[0.9]">
-               ALÉM DA<br/>
-               IMAGEM.
-             </h2>
-           </div>
-           <div>
-             <p className="text-xl md:text-2xl leading-relaxed opacity-80 mb-8">
-               {photographer.description}
-             </p>
-             <p className="text-lg opacity-60">
-               Nosso objetivo é transformar o ordinário em extraordinário. Utilizamos técnicas avançadas de iluminação e composição para criar narrativas visuais impactantes.
-             </p>
-           </div>
+      <section id="sobre" className="py-32 px-6 md:px-20 bg-white dark:bg-black text-black dark:text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gray-100 dark:bg-zinc-900/50 -skew-x-12 transform translate-x-20 z-0" />
+        <div className="container mx-auto relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+             <div>
+               <h2 className="text-5xl md:text-8xl font-bold tracking-tighter mb-8 leading-[0.85] uppercase">
+                 Além da<br/>
+                 <span style={{ color: photographer.colors.primary }}>Imagem.</span>
+               </h2>
+               <div className="h-2 w-24 bg-black dark:bg-white mb-12" />
+             </div>
+             <div>
+               <p className="text-2xl md:text-3xl leading-relaxed font-light mb-8">
+                 "{photographer.description}"
+               </p>
+               <p className="text-lg opacity-60 leading-relaxed max-w-md">
+                 Nosso objetivo é transformar o ordinário em extraordinário. Utilizamos técnicas avançadas de iluminação e composição para criar narrativas visuais impactantes que resistem ao teste do tempo.
+               </p>
+               
+               <div className="mt-12 flex gap-12">
+                 <div>
+                   <h3 className="text-4xl font-bold mb-2">10+</h3>
+                   <p className="text-sm uppercase tracking-widest opacity-50">Anos de Exp.</p>
+                 </div>
+                 <div>
+                   <h3 className="text-4xl font-bold mb-2">500+</h3>
+                   <p className="text-sm uppercase tracking-widest opacity-50">Projetos</p>
+                 </div>
+                 <div>
+                   <h3 className="text-4xl font-bold mb-2">12</h3>
+                   <p className="text-sm uppercase tracking-widest opacity-50">Prêmios</p>
+                 </div>
+               </div>
+             </div>
+          </div>
         </div>
       </section>
 
       {/* Portfolio Moderno - Masonry/Grid Assimétrico */}
-      <section className="py-32 px-6 md:px-20">
-        <div className="flex justify-between items-end mb-20">
-          <h2 className="text-5xl font-bold tracking-tight">Trabalhos Recentes</h2>
-          <span className="hidden md:block text-sm uppercase tracking-wider opacity-60">Scroll para explorar</span>
+      <section id="portfolio" className="py-32 px-6 md:px-20 bg-zinc-50 dark:bg-[#0a0a0a]">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-24 border-b border-gray-200 dark:border-zinc-800 pb-8">
+          <h2 className="text-6xl md:text-8xl font-bold tracking-tighter uppercase">Selected<br/>Works</h2>
+          <div className="flex items-center gap-4 mt-8 md:mt-0">
+            <span className="text-sm uppercase tracking-wider opacity-60">Explorar Galeria</span>
+            <ArrowRight className="opacity-60" />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-24">
           {photographer.portfolio.map((item, index) => (
             <motion.div 
               key={item.id}
               className={`group cursor-pointer relative ${index % 2 !== 0 ? 'md:mt-32' : ''}`}
               onClick={() => goToAlbum(item.id)}
-              whileHover={{ scale: 0.98 }}
+              whileHover={{ y: -10 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="overflow-hidden rounded-lg mb-6">
-                <img src={item.imageUrl} alt={item.title} className="w-full object-cover aspect-[3/4] group-hover:scale-110 transition-transform duration-700" />
+              <div className="overflow-hidden mb-6 relative">
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all z-10 duration-500" />
+                <img src={item.imageUrl} alt={item.title} className="w-full object-cover aspect-[3/4] grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <div className="absolute top-4 right-4 bg-white text-black px-4 py-2 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                  Ver Projeto
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <h3 className="text-3xl font-bold">{item.title}</h3>
-                <ArrowUpRight className="opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-2 group-hover:-translate-y-2" />
+              <div className="flex justify-between items-start border-t border-gray-300 dark:border-zinc-800 pt-6">
+                <div>
+                  <h3 className="text-3xl font-bold mb-2 group-hover:text-[var(--primary)] transition-colors" style={{ '--primary': photographer.colors.primary } as any}>{item.title}</h3>
+                  <p className="text-sm uppercase tracking-widest opacity-50">{item.category}</p>
+                </div>
+                <ArrowUpRight className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all transform" />
               </div>
-              <p className="text-gray-500 mt-2">{item.category}</p>
             </motion.div>
           ))}
+        </div>
+        
+        <div className="text-center mt-32">
+          <Button variant="outline" className="rounded-full px-12 py-8 text-xl uppercase tracking-widest border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
+            Ver Todos os Projetos
+          </Button>
         </div>
       </section>
 
       {/* Modern Services */}
-      <section className="py-32 bg-zinc-900 text-white px-6 md:px-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          <div>
-            <h2 className="text-4xl font-bold mb-8">Serviços Premium</h2>
-            <p className="text-gray-400 text-lg">{photographer.tagline}</p>
+      <section id="servicos" className="py-32 bg-black text-white px-6 md:px-20 relative">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
+          <div className="md:col-span-4 sticky top-32 h-fit">
+            <span className="text-sm font-bold text-[var(--primary)] uppercase tracking-widest mb-4 block" style={{ color: photographer.colors.primary }}>O que fazemos</span>
+            <h2 className="text-5xl md:text-7xl font-bold mb-8 uppercase leading-none">Serviços<br/>Premium</h2>
+            <p className="text-gray-400 text-lg leading-relaxed mb-8">
+              Soluções fotográficas de alto padrão para quem não aceita menos que a perfeição. Cada serviço é executado com maestria técnica e visão artística.
+            </p>
+            <Button className="bg-white text-black hover:bg-gray-200 rounded-full px-8 py-6 font-bold uppercase tracking-wider">
+              Solicitar Orçamento
+            </Button>
           </div>
-          <div className="space-y-12">
+          
+          <div className="md:col-span-8 space-y-px bg-zinc-800">
             {photographer.services.map((service, i) => (
-              <div key={i} className="border-t border-zinc-700 pt-8 group cursor-pointer hover:pl-4 transition-all duration-300">
-                <h3 className="text-2xl font-bold mb-2 flex items-center gap-4">
-                  <span className="text-sm font-normal text-zinc-500">0{i+1}</span>
-                  {service.title}
-                </h3>
-                <p className="text-gray-400 mb-4">{service.description}</p>
-                <ul className="flex flex-wrap gap-3 text-sm text-zinc-500">
-                   {service.features.map((f, j) => <li key={j}># {f}</li>)}
-                </ul>
+              <div key={i} className="bg-black p-8 md:p-12 group hover:bg-zinc-900 transition-colors duration-500">
+                <div className="flex flex-col md:flex-row md:items-start gap-8">
+                  <span className="text-4xl font-thin text-zinc-600 group-hover:text-white transition-colors">0{i+1}</span>
+                  <div className="flex-1">
+                    <h3 className="text-3xl font-bold mb-4 group-hover:translate-x-2 transition-transform duration-300">{service.title}</h3>
+                    <p className="text-gray-400 mb-8 max-w-xl group-hover:text-gray-300">{service.description}</p>
+                    <ul className="grid grid-cols-2 gap-4">
+                       {service.features.map((f, j) => (
+                         <li key={j} className="text-sm text-zinc-500 flex items-center gap-2 group-hover:text-zinc-400">
+                           <span className="w-1.5 h-1.5 bg-zinc-700 group-hover:bg-[var(--primary)] transition-colors" style={{ backgroundColor: photographer.colors.primary }}></span>
+                           {f}
+                         </li>
+                       ))}
+                    </ul>
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity self-center">
+                    <ArrowRight size={32} className="-rotate-45" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -406,19 +543,41 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       </section>
 
       {/* Contact Moderno */}
-      <section className="py-32 px-6 md:px-20 bg-black text-white text-center">
-        <h2 className="text-[10vw] font-bold tracking-tighter leading-none mb-8 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all cursor-default">
-          LET'S TALK
-        </h2>
-        <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-16 text-xl">
-           <a href="#" className="hover:underline decoration-2 underline-offset-4">hello@{photographer.id}.com</a>
-           <a href="#" className="hover:underline decoration-2 underline-offset-4">+55 11 99999-9999</a>
-           <a href="#" className="hover:underline decoration-2 underline-offset-4">Instagram</a>
+      <section id="contato" className="py-40 px-6 md:px-20 bg-zinc-900 text-white text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+        
+        <div className="relative z-10">
+          <p className="text-sm font-bold uppercase tracking-[0.5em] mb-8 text-gray-400">Vamos conversar?</p>
+          <h2 className="text-[12vw] font-bold tracking-tighter leading-none mb-12 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all cursor-pointer mix-blend-exclusion">
+            LET'S TALK
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-12 max-w-4xl mx-auto mb-20">
+            <div className="group">
+              <h3 className="text-gray-500 text-sm uppercase tracking-widest mb-4">Email</h3>
+              <a href={`mailto:hello@${photographer.id}.com`} className="text-xl md:text-2xl font-light hover:underline decoration-1 underline-offset-8">hello@{photographer.id}.com</a>
+            </div>
+            <div className="group">
+              <h3 className="text-gray-500 text-sm uppercase tracking-widest mb-4">Telefone</h3>
+              <a href="tel:+5511999999999" className="text-xl md:text-2xl font-light hover:underline decoration-1 underline-offset-8">+55 11 99999-9999</a>
+            </div>
+            <div className="group">
+              <h3 className="text-gray-500 text-sm uppercase tracking-widest mb-4">Social</h3>
+              <div className="flex justify-center gap-6">
+                {socialLinks.map((social, i) => (
+                  <a key={i} href={social.href} className="hover:text-[var(--primary)] transition-colors transform hover:scale-110" style={{ color: 'white' }}>
+                    <social.icon size={24} />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <footer className="border-t border-zinc-800 pt-12 flex flex-col md:flex-row justify-between text-xs text-zinc-600 uppercase tracking-widest">
+             <p>© {new Date().getFullYear()} {photographer.name}. Todos os direitos reservados.</p>
+             <p>Design by Fotografo Landing Page</p>
+          </footer>
         </div>
-        <footer className="mt-32 border-t border-zinc-800 pt-8 flex justify-between text-sm text-zinc-500">
-           <p>© {new Date().getFullYear()} {photographer.name}</p>
-           <p>Design by Fotografo Landing Page</p>
-        </footer>
       </section>
     </div>
   );
@@ -797,7 +956,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         <h2 className="text-5xl font-black text-center mb-16 text-[#881337] uppercase transform -rotate-2">O que eu faço</h2>
         <div className="grid md:grid-cols-3 gap-8">
            {photographer.services.map((service, i) => (
-             <div key={i} className={`p-8 rounded-[2rem] border-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all ${
+             <div key={i} className={`text-black p-8 rounded-[2rem] border-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all ${
                i % 3 === 0 ? 'bg-[#fff1f2] border-[#f43f5e]' : 
                i % 3 === 1 ? 'bg-[#f0fdf4] border-[#22c55e]' : 
                'bg-[#fefce8] border-[#eab308]'

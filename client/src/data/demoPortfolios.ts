@@ -279,7 +279,7 @@ export const demoPhotographers: Record<string, DemoPhotographerData> = {
     tagline: 'Fotógrafo Artístico Premium',
     description: 'Fotografia artística com foco em composição, iluminação profissional e visão criativa única.',
     specialty: 'Artístico',
-    heroImage: '/BannerDemo/rafael.jpg',
+    heroImage: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&h=800&fit=crop',
     colors: {
       primary: '#9D4EDD',
       accent: '#3A86FF',
@@ -379,7 +379,7 @@ export const demoPhotographers: Record<string, DemoPhotographerData> = {
         id: '2',
         title: 'Geometria e Cores',
         category: 'minimalista',
-        imageUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b2f?w=600&h=400&fit=crop',
+        imageUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&h=400&fit=crop',
         description: 'Composições geométricas com paleta de cores limitada.',
       },
       {
