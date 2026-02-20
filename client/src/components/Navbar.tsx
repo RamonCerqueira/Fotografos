@@ -13,7 +13,7 @@
  */
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
 import { getLanguageTexts } from '@/data/languages';
 import { pageConfig } from '@/data/config';
@@ -125,5 +125,6 @@ export default function Navbar() {
         </div>
       </div>
     </motion.nav>
+    </>
   );
 }

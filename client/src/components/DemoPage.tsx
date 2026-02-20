@@ -318,8 +318,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       </section>
     </div>
   );
-        <div className="flex flex-col gap-4 text-sm tracking-widest uppercase opacity-70 mb-12">
-          <a href="mailto:contact@example.com" className="hover:opacity-100 transition-opacity">contact@example.com</a>
+
   // --- LAYOUT CLÁSSICO ---
   // Serifas, bordas douradas, simetria, elegância.
   const renderClassic = () => (
