@@ -78,6 +78,7 @@ export default function Portfolio() {
                 src={image.imageUrl}
                 alt={image.alt}
                 className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
               />
 
               {/* Overlay ao hover */}

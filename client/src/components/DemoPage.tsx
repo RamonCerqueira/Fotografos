@@ -4,11 +4,12 @@
  * Renderiza layouts distintos baseados no estilo do fotógrafo (variant)
  */
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
 import { DemoPhotographerData } from '@/data/demoPortfolios';
+import CameraLensLoader from './CameraLensLoader';
 import { Button } from '@/components/ui/button';
 import { 
   Heart, Camera, Star, ArrowRight, Menu, X, Instagram, Facebook, Twitter, Linkedin, Mail, Phone, MapPin, 
@@ -26,148 +27,299 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
   const { theme } = useLanguageTheme();
   const [, setLocation] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const goToAlbum = (albumId: string) => {
     setLocation(`/demo/${photographer.id}/album/${albumId}`);
   };
 
   const socialLinks = [
-    { icon: Instagram, href: '#' },
-    { icon: Facebook, href: '#' },
-    { icon: Twitter, href: '#' }
+    { name: 'Instagram', icon: Instagram, href: '#' },
+    { name: 'Facebook', icon: Facebook, href: '#' },
+    { name: 'Twitter', icon: Twitter, href: '#' }
   ];
 
   // --- LAYOUT MINIMALISTA ---
   // Foco em tipografia, espaço em branco e simplicidade.
   const renderMinimalist = () => (
-    <div className={`min-h-screen font-sans ${theme === 'dark' ? 'bg-[#0a0a0a] text-gray-200' : 'bg-white text-gray-800'}`}>
+    <div className={`min-h-screen font-sans selection:bg-[#D4AF37] selection:text-white ${theme === 'dark' ? 'bg-[#0f0f0f] text-[#e0e0e0]' : 'bg-[#fcfcfc] text-[#2c2c2c]'}`}>
       {/* Header Minimalista */}
-      <header className="fixed w-full z-50 mix-blend-difference text-white p-6 flex justify-between items-center">
-        <h1 className="text-xl font-light tracking-widest uppercase">{photographer.name}</h1>
-        <nav className="hidden md:flex gap-8 text-sm tracking-widest uppercase">
-          <a href="#portfolio" className="hover:opacity-70 transition-opacity">Portfólio</a>
-          <a href="#about" className="hover:opacity-70 transition-opacity">Sobre</a>
-          <a href="#contact" className="hover:opacity-70 transition-opacity">Contato</a>
+      <header className={`fixed w-full z-50 p-8 flex justify-between items-center transition-all duration-300 ${isMenuOpen ? 'bg-white dark:bg-black' : 'bg-transparent mix-blend-difference text-white'}`}>
+        <h1 className="text-xl md:text-2xl font-light tracking-[0.2em] uppercase z-50">{photographer.name}</h1>
+        
+        {/* Menu Desktop */}
+        <nav className="hidden md:flex gap-12 text-xs font-medium tracking-[0.2em] uppercase">
+          <a href="#portfolio" className="hover:text-[#D4AF37] transition-colors relative group">
+            Portfólio
+            <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#services" className="hover:text-[#D4AF37] transition-colors relative group">
+            Serviços
+            <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#about" className="hover:text-[#D4AF37] transition-colors relative group">
+            Sobre
+            <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#contact" className="hover:text-[#D4AF37] transition-colors relative group">
+            Contato
+            <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+          </a>
         </nav>
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          <Menu />
-        </Button>
+
+        {/* Menu Mobile Button */}
+        <button 
+          className="md:hidden z-50 p-2 focus:outline-none" 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Menu"
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        {/* Menu Mobile Overlay */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="fixed inset-0 bg-white dark:bg-black z-40 flex flex-col justify-center items-center gap-8"
+            >
+              <a href="#portfolio" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Portfólio</a>
+              <a href="#services" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Serviços</a>
+              <a href="#about" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Sobre</a>
+              <a href="#contact" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Contato</a>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
-      {/* Hero Minimalista - Apenas texto e uma imagem sutil ou cor sólida */}
-      <section className="h-screen flex flex-col justify-center items-center text-center px-4">
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.8 }}
-          className="text-sm tracking-[0.3em] uppercase mb-6"
+      {/* Hero Minimalista Refinado */}
+      <section className="h-screen relative flex flex-col justify-center items-center text-center px-4 overflow-hidden">
+        {/* Background Sutil */}
+        <div className="absolute inset-0 opacity-5 dark:opacity-10 pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-400 via-transparent to-transparent opacity-40 blur-3xl transform scale-150"></div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="relative z-10"
         >
-          {photographer.specialty}
-        </motion.p>
-        <motion.h2 
-          initial={{ opacity: 0, scale: 0.9 }} 
-          animate={{ opacity: 1, scale: 1 }} 
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-6xl md:text-9xl font-thin tracking-tighter mb-8"
-        >
-          {photographer.name.split(' ')[0]}
-        </motion.h2>
+          <span className="block text-xs md:text-sm tracking-[0.5em] uppercase text-[#D4AF37] mb-6">
+            {photographer.specialty} Photography
+          </span>
+          <h2 className="text-5xl md:text-8xl lg:text-9xl font-extralight tracking-tighter mb-8 leading-none">
+            {photographer.name.split(' ').map((word, i) => (
+              <span key={i} className="inline-block mx-2">{word}</span>
+            ))}
+          </h2>
+          <div className="w-[1px] h-24 bg-[#D4AF37] mx-auto mt-8 opacity-60"></div>
+        </motion.div>
+
         <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          transition={{ delay: 0.5 }}
-          className="h-16 w-[1px] bg-current mt-8"
-        />
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-12 left-0 w-full flex justify-center animate-bounce"
+        >
+          <ChevronDown className="opacity-30" size={32} />
+        </motion.div>
       </section>
 
-      {/* Portfólio Minimalista - Grid limpo */}
-      <section id="portfolio" className="py-24 px-4 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {photographer.portfolio.map((item, index) => (
-            <motion.div 
-              key={item.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="group cursor-pointer"
-              onClick={() => goToAlbum(item.id)}
-            >
-              <div className="overflow-hidden mb-4 aspect-[3/4]">
-                <img 
-                  src={item.imageUrl} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out transform group-hover:scale-105" 
-                />
-              </div>
-              <div className="flex justify-between items-end border-b border-gray-200 dark:border-gray-800 pb-2">
-                <h3 className="text-xl font-light">{item.title}</h3>
-                <span className="text-xs tracking-widest opacity-50">0{index + 1}</span>
-              </div>
-            </motion.div>
-          ))}
+      {/* Portfólio - Grid Assimétrico Moderno */}
+      <section id="portfolio" className="py-32 px-6 md:px-12 lg:px-24">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col md:flex-row justify-between items-end mb-24 border-b border-gray-200 dark:border-gray-800 pb-8"
+          >
+            <div>
+              <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-2">Selected Works</span>
+              <h3 className="text-3xl md:text-5xl font-light">Portfólio</h3>
+            </div>
+            <p className="text-sm opacity-50 max-w-xs mt-4 md:mt-0 text-right">
+              Uma curadoria dos momentos mais emocionantes e inesquecíveis.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+            {photographer.portfolio.map((item, index) => (
+              <motion.div 
+                key={item.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                className={`group cursor-pointer relative ${
+                  index % 3 === 0 ? 'md:col-span-8' : 
+                  index % 3 === 1 ? 'md:col-span-4 md:mt-32' : 
+                  'md:col-span-12 mt-12'
+                }`}
+                onClick={() => goToAlbum(item.id)}
+              >
+                <div className="overflow-hidden relative aspect-[3/4] md:aspect-[4/3]">
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all duration-500 z-10"></div>
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.title} 
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-1000 ease-out transform group-hover:scale-110" 
+                  />
+                  <div className="absolute bottom-0 left-0 p-8 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                    <span className="text-white/80 text-xs tracking-widest uppercase block mb-2">{item.category}</span>
+                    <h3 className="text-white text-3xl font-light">{item.title}</h3>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="mt-24 text-center">
+            <Button variant="outline" className="rounded-full px-12 py-6 border-gray-300 hover:bg-[#D4AF37] hover:text-white hover:border-[#D4AF37] transition-all duration-300 uppercase tracking-widest text-xs">
+              Ver Portfólio Completo
+            </Button>
+          </div>
         </div>
       </section>
 
-      {/* Services Minimalista */}
-      <section className="py-24 bg-gray-50 dark:bg-zinc-900/50">
-        <div className="max-w-4xl mx-auto px-4">
-          <span className="block text-xs font-bold tracking-[0.2em] uppercase mb-12 text-center opacity-40">Serviços</span>
-          <div className="grid gap-12">
-            {photographer.services.map((service) => (
-              <div key={service.id} className="flex flex-col md:flex-row gap-8 items-baseline border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
-                <h3 className="text-2xl font-light min-w-[200px]">{service.title}</h3>
-                <div>
-                  <p className="opacity-70 mb-4 font-light">{service.description}</p>
-                  <ul className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm opacity-50">
-                    {service.features.map((feature, i) => (
-                      <li key={i}>• {feature}</li>
-                    ))}
-                  </ul>
+      {/* Services - Layout Limpo e Estruturado */}
+      <section id="services" className="py-32 bg-[#fafafa] dark:bg-[#0c0c0c]">
+        <div className="max-w-6xl mx-auto px-6 md:px-12">
+          <div className="text-center mb-24">
+            <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-4">O que ofereço</span>
+            <h3 className="text-4xl md:text-5xl font-light">Serviços Exclusivos</h3>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
+            {photographer.services.map((service, index) => (
+              <motion.div 
+                key={service.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white dark:bg-[#0a0a0a] p-12 hover:bg-[#fafafa] dark:hover:bg-[#111] transition-colors duration-500 flex flex-col items-center text-center group"
+              >
+                <div className="mb-8 p-4 rounded-full bg-gray-50 dark:bg-gray-900 text-[#D4AF37] group-hover:scale-110 transition-transform duration-500">
+                  {service.icon === 'Camera' && <Camera size={28} strokeWidth={1} />}
+                  {service.icon === 'Heart' && <Heart size={28} strokeWidth={1} />}
+                  {service.icon === 'BookOpen' && <Layers size={28} strokeWidth={1} />}
                 </div>
-              </div>
+                <h4 className="text-xl font-medium mb-4">{service.title}</h4>
+                <p className="text-sm opacity-60 leading-relaxed mb-8">{service.description}</p>
+                <ul className="text-xs space-y-3 opacity-50 uppercase tracking-wider">
+                  {service.features.map((feature, i) => (
+                    <li key={i} className="flex items-center justify-center gap-2">
+                      <span className="w-1 h-1 bg-[#D4AF37] rounded-full"></span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* About Minimalista */}
-      <section id="about" className="py-24 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <span className="block text-xs font-bold tracking-[0.2em] uppercase mb-8 opacity-40">Sobre</span>
-          <p className="text-xl md:text-2xl leading-relaxed font-light mb-8">
-            {photographer.description}
+      {/* About - Layout Editorial */}
+      <section id="about" className="py-32 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-24">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="w-full md:w-1/2 relative"
+          >
+            <div className="aspect-[4/5] relative overflow-hidden">
+              <img 
+                src={photographer.heroImage || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&fit=crop"} 
+                alt={photographer.name} 
+                loading="lazy"
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+              />
+            </div>
+            <div className="absolute -bottom-8 -right-8 w-48 h-48 border border-[#D4AF37] hidden md:block z-[-1]"></div>
+            <div className="absolute -top-8 -left-8 w-48 h-48 bg-gray-50 dark:bg-zinc-900 hidden md:block z-[-1]"></div>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="w-full md:w-1/2"
+          >
+            <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-6">Sobre a Fotógrafa</span>
+            <h3 className="text-4xl md:text-5xl font-light mb-8 leading-tight">Capturando a essência de cada história de amor.</h3>
+            <p className="text-lg opacity-70 font-light leading-relaxed mb-8">
+              {photographer.description}
+            </p>
+            <p className="text-sm opacity-60 leading-relaxed mb-12">
+              Com mais de 10 anos de experiência, busco não apenas tirar fotos, mas criar memórias tangíveis que resistirão ao teste do tempo. Minha abordagem é documental e artística, focando nas emoções genuínas e nos detalhes que tornam seu dia único.
+            </p>
+            <div className="flex gap-4">
+               <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg" alt="Sony" className="h-4 opacity-30 grayscale" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/Canon_logo.svg" alt="Canon" className="h-4 opacity-30 grayscale" />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Testimonial Minimalista */}
+      <section className="py-32 bg-[#fafafa] dark:bg-[#0c0c0c] px-6 text-center">
+        <div className="max-w-3xl mx-auto">
+          <span className="text-6xl text-[#D4AF37] font-serif opacity-30 block mb-8">"</span>
+          <p className="text-2xl md:text-3xl font-light italic leading-relaxed mb-12">
+            {photographer.testimonials[0]?.content}
           </p>
-          <img 
-            src={photographer.heroImage} 
-            alt={photographer.name} 
-            className="w-full h-96 object-cover grayscale mt-8"
-          />
+          <div>
+            <h5 className="text-sm font-bold tracking-[0.2em] uppercase">{photographer.testimonials[0]?.name}</h5>
+            <span className="text-xs opacity-50 uppercase tracking-widest mt-2 block">{photographer.testimonials[0]?.role}</span>
+          </div>
         </div>
       </section>
 
       {/* Contact Minimalista */}
-      <section id="contact" className="py-24 px-4 bg-black text-white text-center">
-        <h2 className="text-3xl font-light mb-8">Vamos Conversar?</h2>
-        <div className="flex flex-col gap-4 text-sm tracking-widest uppercase opacity-70 mb-12">
-          <a href="mailto:contact@example.com" className="hover:opacity-100 transition-opacity">contact@example.com</a>
-          <a href="tel:+5511999999999" className="hover:opacity-100 transition-opacity">+55 11 99999-9999</a>
+      <section id="contact" className="py-32 px-6 bg-black text-white text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&fit=crop" alt="bg" className="w-full h-full object-cover" />
         </div>
-        <div className="flex justify-center gap-8">
-          {socialLinks.map((social, i) => (
-            <a key={i} href={social.href} className="hover:text-gray-400 transition-colors">
-              <social.icon size={20} />
-            </a>
-          ))}
+        <div className="absolute inset-0 bg-black/80"></div>
+        
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <h2 className="text-4xl md:text-6xl font-extralight mb-8">Vamos criar algo belo?</h2>
+          <p className="text-lg text-gray-300 font-light mb-12 max-w-lg mx-auto">
+            Estou disponível para casamentos e ensaios em todo o mundo. Entre em contato para verificar disponibilidade.
+          </p>
+          <Button 
+            className="bg-white text-black hover:bg-[#D4AF37] hover:text-white rounded-none px-12 py-8 text-xs tracking-[0.2em] uppercase transition-all duration-300"
+            onClick={() => window.location.href = `mailto:contato@${photographer.id}.com`}
+          >
+            Entrar em Contato
+          </Button>
+          
+          <div className="flex justify-center gap-12 mt-24">
+            {socialLinks.map((link, i) => (
+              <a key={i} href={link.href} className="text-white/50 hover:text-[#D4AF37] transition-colors" aria-label={link.name}>
+                <link.icon size={20} />
+              </a>
+            ))}
+          </div>
+          
+          <div className="mt-12 pt-12 border-t border-white/10 text-xs text-white/30 tracking-widest uppercase">
+            &copy; {new Date().getFullYear()} {photographer.name}. All Rights Reserved.
+          </div>
         </div>
       </section>
-      
-      {/* Footer Minimalista */}
-      <footer className="py-12 text-center text-xs tracking-widest uppercase opacity-50">
-        <p>&copy; {new Date().getFullYear()} {photographer.name}. Todos os direitos reservados.</p>
-      </footer>
     </div>
   );
-
+        <div className="flex flex-col gap-4 text-sm tracking-widest uppercase opacity-70 mb-12">
+          <a href="mailto:contact@example.com" className="hover:opacity-100 transition-opacity">contact@example.com</a>
   // --- LAYOUT CLÁSSICO ---
   // Serifas, bordas douradas, simetria, elegância.
   const renderClassic = () => (
@@ -308,8 +460,9 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           >
             <Button 
               variant="ghost" 
-              className="absolute top-8 right-8 text-white hover:bg-white/20 rounded-full p-4 h-auto w-auto"
+              className="absolute top-8 right-8 text-white hover:bg-white/20 rounded-full p-4 h-auto w-auto cursor-pointer z-[101]"
               onClick={() => setIsMenuOpen(false)}
+              aria-label="Close menu"
             >
               <X size={48} />
             </Button>
@@ -327,7 +480,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
-                  className="text-6xl md:text-8xl font-black hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all uppercase tracking-tighter"
+                  className="text-6xl md:text-8xl font-black hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all uppercase tracking-tighter cursor-pointer"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
@@ -337,7 +490,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
             
             <div className="absolute bottom-12 flex gap-8">
               {socialLinks.map((social, i) => (
-                <a key={i} href={social.href} className="text-gray-400 hover:text-white transition-colors">
+                <a key={i} href={social.href} className="text-gray-400 hover:text-white transition-colors" aria-label={social.name}>
                   <social.icon size={24} />
                 </a>
               ))}
@@ -346,11 +499,11 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         )}
       </AnimatePresence>
 
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6 md:p-10 mix-blend-difference text-white">
-        <span className="text-2xl font-bold tracking-tighter uppercase">{photographer.name}</span>
+      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6 md:p-10 mix-blend-difference text-white pointer-events-none">
+        <span className="text-2xl font-bold tracking-tighter uppercase pointer-events-auto">{photographer.name}</span>
         <Button 
           variant="outline" 
-          className="rounded-full border-white text-white bg-transparent hover:bg-white hover:text-black transition-all px-8 py-6 text-sm tracking-widest uppercase font-bold"
+          className="rounded-full border-white text-white bg-white/10 backdrop-blur-md hover:bg-white hover:text-black transition-all px-8 py-6 text-sm tracking-widest uppercase font-bold pointer-events-auto cursor-pointer z-50"
           onClick={() => setIsMenuOpen(true)}
         >
           Menu
@@ -367,7 +520,16 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
               transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
               className="w-full h-full"
             >
-              <img src={photographer.heroImage} alt="Hero" className="w-full h-full object-cover" />
+              <img 
+                src={photographer.heroImage} 
+                alt="Hero" 
+                loading="eager"
+                className="w-full h-full object-cover" 
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement?.parentElement?.classList.add('bg-gradient-to-br', 'from-gray-900', 'to-black');
+                }}
+              />
             </motion.div>
           ) : (
             <div className="w-full h-full bg-gray-900" />
@@ -474,9 +636,9 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
               whileHover={{ y: -10 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="overflow-hidden mb-6 relative">
+              <div className="overflow-hidden mb-6 relative shadow-2xl rounded-sm">
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all z-10 duration-500" />
-                <img src={item.imageUrl} alt={item.title} className="w-full object-cover aspect-[3/4] grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <img src={item.imageUrl} alt={item.title} loading="lazy" className="w-full object-cover aspect-[3/4] grayscale group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute top-4 right-4 bg-white text-black px-4 py-2 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity z-20">
                   Ver Projeto
                 </div>
@@ -517,7 +679,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           
           <div className="md:col-span-8 space-y-px bg-zinc-800">
             {photographer.services.map((service, i) => (
-              <div key={i} className="bg-black p-8 md:p-12 group hover:bg-zinc-900 transition-colors duration-500">
+              <div key={i} className="bg-black p-8 md:p-12 group hover:bg-zinc-900 transition-colors duration-500 border-l-4 border-transparent hover:border-[var(--primary)]" style={{ '--primary': photographer.colors.primary } as any}>
                 <div className="flex flex-col md:flex-row md:items-start gap-8">
                   <span className="text-4xl font-thin text-zinc-600 group-hover:text-white transition-colors">0{i+1}</span>
                   <div className="flex-1">
@@ -548,7 +710,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         
         <div className="relative z-10">
           <p className="text-sm font-bold uppercase tracking-[0.5em] mb-8 text-gray-400">Vamos conversar?</p>
-          <h2 className="text-[12vw] font-bold tracking-tighter leading-none mb-12 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all cursor-pointer mix-blend-exclusion">
+          <h2 className="text-[12vw] 2xl:text-[180px] font-bold tracking-tighter leading-none mb-12 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all cursor-pointer mix-blend-exclusion">
             LET'S TALK
           </h2>
           
@@ -565,7 +727,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
               <h3 className="text-gray-500 text-sm uppercase tracking-widest mb-4">Social</h3>
               <div className="flex justify-center gap-6">
                 {socialLinks.map((social, i) => (
-                  <a key={i} href={social.href} className="hover:text-[var(--primary)] transition-colors transform hover:scale-110" style={{ color: 'white' }}>
+                  <a key={i} href={social.href} className="hover:text-[var(--primary)] transition-colors transform hover:scale-110" style={{ color: 'white' }} aria-label={social.name}>
                     <social.icon size={24} />
                   </a>
                 ))}
@@ -631,7 +793,12 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
                    transition={{ type: "spring", stiffness: 300 }}
                  >
                    <div className={`${height} w-full overflow-hidden rounded-3xl border-4 border-white/20 shadow-2xl relative`}>
-                     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                     <img 
+                       src={item.imageUrl} 
+                       alt={item.title} 
+                       className="w-full h-full object-cover" 
+                       loading="lazy"
+                     />
                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <h3 className="text-3xl font-bold text-white text-center px-4 transform rotate-[-5deg]">{item.title}</h3>
                      </div>
@@ -708,14 +875,60 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
             </div>
             <span className="font-bold text-xl tracking-tight">{photographer.name}</span>
           </div>
-          <div className="hidden md:flex gap-8 font-medium text-sm text-slate-500">
-            <a href="#" className="hover:text-blue-600">Home</a>
-            <a href="#" className="hover:text-blue-600">Serviços</a>
-            <a href="#" className="hover:text-blue-600">Portfólio</a>
-            <a href="#" className="hover:text-blue-600">Clientes</a>
+          
+          {/* Desktop Menu */}
+          <div className="hidden md:flex gap-8 font-medium text-sm text-slate-500 dark:text-slate-400">
+            <a href="#" className="hover:text-blue-600 transition-colors">Home</a>
+            <a href="#" className="hover:text-blue-600 transition-colors">Serviços</a>
+            <a href="#" className="hover:text-blue-600 transition-colors">Portfólio</a>
+            <a href="#" className="hover:text-blue-600 transition-colors">Clientes</a>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">Agendar Reunião</Button>
+          
+          <div className="flex items-center gap-4">
+             <Button 
+               className="hidden md:flex bg-blue-600 hover:bg-blue-700 text-white"
+               onClick={() => document.getElementById('contact-corporate')?.scrollIntoView({ behavior: 'smooth' })}
+             >
+               Agendar Reunião
+             </Button>
+             
+             {/* Mobile Menu Toggle */}
+             <button 
+               className="md:hidden p-2 text-slate-600 dark:text-slate-300"
+               onClick={() => setIsMenuOpen(!isMenuOpen)}
+             >
+               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+             </button>
+          </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 overflow-hidden"
+            >
+              <div className="flex flex-col p-4 gap-4 text-slate-600 dark:text-slate-300">
+                <a href="#" onClick={() => setIsMenuOpen(false)} className="py-2 hover:text-blue-600">Home</a>
+                <a href="#" onClick={() => setIsMenuOpen(false)} className="py-2 hover:text-blue-600">Serviços</a>
+                <a href="#" onClick={() => setIsMenuOpen(false)} className="py-2 hover:text-blue-600">Portfólio</a>
+                <a href="#" onClick={() => setIsMenuOpen(false)} className="py-2 hover:text-blue-600">Clientes</a>
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-2"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    document.getElementById('contact-corporate')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  Agendar Reunião
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Corporativo */}
@@ -731,7 +944,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
             </p>
             <div className="flex gap-4">
               <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6">Ver Portfólio</Button>
-              <Button variant="outline" className="px-8 py-6 border-slate-300">Nossos Serviços</Button>
+              <Button variant="outline" className="px-8 py-6 border-slate-300 dark:border-slate-600 dark:text-white">Nossos Serviços</Button>
             </div>
             <div className="mt-12 flex gap-8 text-slate-400">
                <div className="flex items-center gap-2"><Star className="text-yellow-400 fill-yellow-400" /> 5.0 Avaliação</div>
@@ -741,10 +954,19 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           <div className="relative">
             <div className="absolute inset-0 bg-blue-600 rounded-2xl transform rotate-3 opacity-10"></div>
             {photographer.heroImage ? (
-               <img src={photographer.heroImage} alt="Corporate" className="rounded-2xl shadow-xl relative z-10 w-full object-cover aspect-[4/3]" />
-            ) : (
-               <div className="rounded-2xl bg-slate-200 w-full aspect-[4/3] flex items-center justify-center">Imagem Hero</div>
-            )}
+               <img 
+                 src={photographer.heroImage} 
+                 alt="Corporate Hero" 
+                 className="rounded-2xl shadow-xl relative z-10 w-full object-cover aspect-[4/3]"
+                 onError={(e) => {
+                   e.currentTarget.style.display = 'none';
+                   e.currentTarget.parentElement?.querySelector('.fallback-hero')?.classList.remove('hidden');
+                 }} 
+               />
+            ) : null}
+            <div className={`fallback-hero rounded-2xl bg-slate-200 dark:bg-slate-700 w-full aspect-[4/3] flex items-center justify-center text-slate-400 ${photographer.heroImage ? 'hidden' : ''}`}>
+              <ImageIcon size={48} />
+            </div>
           </div>
         </div>
       </section>
@@ -753,7 +975,12 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       <section className="py-20 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
          <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
             <div className="relative h-[400px] rounded-lg overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop" alt="Office" className="w-full h-full object-cover" />
+              <img 
+                src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop" 
+                alt="Office" 
+                className="w-full h-full object-cover" 
+                loading="lazy"
+              />
               <div className="absolute inset-0 bg-blue-900/20"></div>
             </div>
             <div>
@@ -818,7 +1045,12 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
                  onClick={() => goToAlbum(item.id)}
                >
                  <div className="relative overflow-hidden aspect-video">
-                   <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                   <img 
+                     src={item.imageUrl} 
+                     alt={item.title} 
+                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                     loading="lazy"
+                   />
                    <div className="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded shadow">
                      CASE
                    </div>
@@ -835,7 +1067,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       </section>
 
       {/* Corporate Contact / Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-16">
+      <footer id="contact-corporate" className="bg-slate-900 text-slate-300 py-16">
         <div className="container mx-auto px-4 grid md:grid-cols-4 gap-12">
            <div className="col-span-1 md:col-span-2">
              <div className="flex items-center gap-2 mb-6 text-white">
@@ -1091,14 +1323,30 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
     </div>
   );
 
-  // Seleciona o layout baseado na variante
-  switch (variant) {
-    case 'minimalista': return renderMinimalist();
-    case 'classico': return renderClassic();
-    case 'artistico': return renderArtistic();
-    case 'corporativo': return renderCorporate();
-    case 'criativo': return renderCreative();
-    case 'moderno':
-    default: return renderModern();
-  }
+  const renderContent = () => {
+    switch (variant) {
+      case 'minimalista': return renderMinimalist();
+      case 'classico': return renderClassic();
+      case 'artistico': return renderArtistic();
+      case 'corporativo': return renderCorporate();
+      case 'criativo': return renderCreative();
+      case 'moderno':
+      default: return renderModern();
+    }
+  };
+
+  const handleLoaderComplete = useCallback(() => setIsLoading(false), []);
+
+  return (
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <CameraLensLoader key="loader" onComplete={handleLoaderComplete} />
+        )}
+      </AnimatePresence>
+      <div className={isLoading ? 'h-screen overflow-hidden' : ''}>
+        {renderContent()}
+      </div>
+    </>
+  );
 }

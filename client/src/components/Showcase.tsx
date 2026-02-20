@@ -98,7 +98,8 @@ export default function Showcase() {
                 <img
                   src={example.imageUrl}
                   alt={example.photographerName}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
                 />
 
                 {/* Overlay com informações */}

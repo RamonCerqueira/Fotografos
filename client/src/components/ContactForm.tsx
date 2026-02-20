@@ -34,8 +34,9 @@ export default function ContactForm() {
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     whatsapp: '',
-    ensaioType: 'outro',
     message: '',
+    plan: '',
+    layoutModel: '',
   });
 
   const containerVariants = {
@@ -67,13 +68,6 @@ export default function ContactForm() {
     }));
   };
 
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      ensaioType: value as ContactFormData['ensaioType'],
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -86,17 +80,17 @@ export default function ContactForm() {
     setIsLoading(true);
 
     try {
-      // Simular envio de email
-      // Em produção, isso seria uma chamada para um endpoint backend
-      const emailBody = `
-Nome: ${formData.name}
-WhatsApp: ${formData.whatsapp}
-Tipo de Ensaio: ${formData.ensaioType}
-Mensagem: ${formData.message}
-      `.trim();
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Abrir cliente de email padrão
-      window.location.href = `mailto:${pageConfig.contact.email}?subject=Novo Orçamento - ${formData.name}&body=${encodeURIComponent(emailBody)}`;
+      if (!response.ok) {
+        throw new Error('Erro ao enviar email');
+      }
 
       // Mostrar mensagem de sucesso
       toast.success(pageTexts.contactForm.success);
@@ -105,8 +99,9 @@ Mensagem: ${formData.message}
       setFormData({
         name: '',
         whatsapp: '',
-        ensaioType: 'outro',
         message: '',
+        plan: '',
+        layoutModel: '',
       });
     } catch (error) {
       toast.error(pageTexts.contactForm.error);
@@ -170,23 +165,34 @@ Mensagem: ${formData.message}
               />
             </motion.div>
 
-            {/* Tipo de Ensaio */}
+            {/* Plano Escolhido */}
             <motion.div variants={itemVariants as any}>
               <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
-                {pageTexts.contactForm.labels.ensaioType}
+                {pageTexts.contactForm.labels.plan}
               </label>
-              <Select value={formData.ensaioType} onValueChange={handleSelectChange}>
-                <SelectTrigger className="w-full px-4 py-3 border border-[#E5E5E5] rounded-lg focus:border-[#D4AF37] focus:outline-none transition-colors duration-300">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ensaios">Ensaios</SelectItem>
-                  <SelectItem value="casamentos">Casamentos</SelectItem>
-                  <SelectItem value="eventos">Eventos</SelectItem>
-                  <SelectItem value="casal">Ensaios em Casal</SelectItem>
-                  <SelectItem value="outro">Outro</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input
+                type="text"
+                name="plan"
+                placeholder={pageTexts.contactForm.placeholders.plan}
+                value={formData.plan}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-lg focus:border-[#D4AF37] focus:outline-none transition-colors duration-300"
+              />
+            </motion.div>
+
+            {/* Modelo de Layout */}
+            <motion.div variants={itemVariants as any}>
+              <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+                {pageTexts.contactForm.labels.layoutModel}
+              </label>
+              <Input
+                type="text"
+                name="layoutModel"
+                placeholder={pageTexts.contactForm.placeholders.layoutModel}
+                value={formData.layoutModel}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-lg focus:border-[#D4AF37] focus:outline-none transition-colors duration-300"
+              />
             </motion.div>
 
             {/* Mensagem */}

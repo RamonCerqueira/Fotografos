@@ -60,8 +60,9 @@ export interface Testimonial {
 export interface ContactFormData {
   name: string;
   whatsapp: string;
-  ensaioType: 'ensaios' | 'casamentos' | 'eventos' | 'casal' | 'outro';
   message: string;
+  plan?: string;
+  layoutModel?: string;
 }
 
 /**

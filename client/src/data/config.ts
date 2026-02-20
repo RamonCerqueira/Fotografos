@@ -75,12 +75,15 @@ export const pageTexts = {
     labels: {
       name: 'Nome completo',
       whatsapp: 'WhatsApp',
-      ensaioType: 'Tipo de ensaio',
+      plan: 'Plano Escolhido (Opcional)',
+      layoutModel: 'Modelo de Layout (Opcional)',
       message: 'Mensagem',
     },
     placeholders: {
       name: 'Seu nome',
       whatsapp: '(11) 99999-9999',
+      plan: 'Ex: Premium, Básico...',
+      layoutModel: 'Ex: Rafael Santos, Beatriz Oliveira...',
       message: 'Conte um pouco sobre seu projeto...',
     },
     submit: 'Enviar Orçamento',
