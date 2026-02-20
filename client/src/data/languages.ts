@@ -104,42 +104,42 @@ export interface LanguageTexts {
 // Português
 export const pt: LanguageTexts = {
   hero: {
-    title: 'Mais clientes encontrando seu trabalho todos os dias',
+    title: 'Fotografia Profissional em Gramado e Serra Gaúcha',
     subtitle:
-      'Uma página profissional que mostra seu portfólio e transforma visitantes em pedidos de orçamento.',
-    cta: 'Falar no WhatsApp',
+      'Eternizando momentos especiais com sensibilidade e técnica. Casamentos, ensaios e eventos corporativos na cidade mais charmosa do Brasil.',
+    cta: 'Solicitar Orçamento',
   },
   painPoints: {
-    title: 'Você pode estar perdendo clientes',
-    subtitle: 'Descubra os desafios que fotógrafos enfrentam',
+    title: 'Por que contratar um profissional?',
+    subtitle: 'A importância de registrar seus momentos com qualidade',
   },
   benefits: {
-    title: 'Benefícios de uma página profissional',
-    subtitle: 'Tudo que você precisa para crescer',
+    title: 'Experiência e Qualidade',
+    subtitle: 'O melhor da fotografia para você',
   },
   portfolio: {
     title: 'Portfólio',
-    subtitle: 'Seu cliente decide em segundos se vai confiar em você',
-    allWorks: 'Todos os trabalhos',
+    subtitle: 'Confira alguns dos nossos trabalhos recentes em Gramado e região',
+    allWorks: 'Ver Galeria Completa',
   },
   services: {
-    title: 'Serviços',
-    subtitle: 'Oferecemos as melhores opções para seu evento especial',
+    title: 'Serviços Fotográficos',
+    subtitle: 'Soluções completas para suas necessidades',
   },
   testimonials: {
     title: 'Depoimentos',
     subtitle: 'O que nossos clientes dizem',
   },
   showcase: {
-    title: 'Veja Exemplos de Portfólios',
-    subtitle: 'Inspire-se com diferentes estilos e estruturas de páginas',
-    viewDemo: 'Ver Demo',
-    photographer: 'Fotógrafo',
-    style: 'Estilo',
+    title: 'Nossos Estilos',
+    subtitle: 'Conheça as diferentes abordagens e encontre a ideal para você',
+    viewDemo: 'Ver Detalhes',
+    photographer: 'Estilo',
+    style: 'Categoria',
   },
   cta: {
-    title: 'Sua história merece ser registrada com qualidade profissional',
-    button: 'Solicitar Orçamento',
+    title: 'Vamos criar memórias inesquecíveis juntos?',
+    button: 'Falar no WhatsApp',
   },
   contactForm: {
     title: 'Solicite seu Orçamento',

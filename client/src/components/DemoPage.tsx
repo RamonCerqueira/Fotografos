@@ -107,6 +107,59 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           ))}
         </div>
       </section>
+
+      {/* Services Minimalista */}
+      <section className="py-24 bg-gray-50 dark:bg-zinc-900/50">
+        <div className="max-w-4xl mx-auto px-4">
+          <span className="block text-xs font-bold tracking-[0.2em] uppercase mb-12 text-center opacity-40">Serviços</span>
+          <div className="grid gap-12">
+            {photographer.services.map((service) => (
+              <div key={service.id} className="flex flex-col md:flex-row gap-8 items-baseline border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
+                <h3 className="text-2xl font-light min-w-[200px]">{service.title}</h3>
+                <div>
+                  <p className="opacity-70 mb-4 font-light">{service.description}</p>
+                  <ul className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm opacity-50">
+                    {service.features.map((feature, i) => (
+                      <li key={i}>• {feature}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Minimalista */}
+      <section id="about" className="py-24 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <span className="block text-xs font-bold tracking-[0.2em] uppercase mb-8 opacity-40">Sobre</span>
+          <p className="text-xl md:text-2xl leading-relaxed font-light mb-8">
+            {photographer.description}
+          </p>
+          <img 
+            src={photographer.heroImage} 
+            alt={photographer.name} 
+            className="w-full h-96 object-cover grayscale mt-8"
+          />
+        </div>
+      </section>
+
+      {/* Contact Minimalista */}
+      <section id="contact" className="py-24 px-4 bg-black text-white text-center">
+        <h2 className="text-3xl font-light mb-8">Vamos Conversar?</h2>
+        <div className="flex flex-col gap-4 text-sm tracking-widest uppercase opacity-70 mb-12">
+          <a href="mailto:contact@example.com" className="hover:opacity-100 transition-opacity">contact@example.com</a>
+          <a href="tel:+5511999999999" className="hover:opacity-100 transition-opacity">+55 11 99999-9999</a>
+        </div>
+        <div className="flex justify-center gap-8">
+          {socialLinks.map((social, i) => (
+            <a key={i} href={social.href} className="hover:text-gray-400 transition-colors">
+              <social.icon size={20} />
+            </a>
+          ))}
+        </div>
+      </section>
       
       {/* Footer Minimalista */}
       <footer className="py-12 text-center text-xs tracking-widest uppercase opacity-50">
@@ -148,6 +201,19 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         )}
       </section>
 
+      {/* About Clássico */}
+      <section className="py-24 px-4 container mx-auto text-center max-w-3xl">
+        <h3 className="text-3xl italic font-serif mb-8 text-[var(--primary)]" style={{ color: photographer.colors.primary }}>Sobre a Artista</h3>
+        <p className="text-lg leading-loose font-serif text-gray-600 dark:text-gray-300">
+          <span className="text-6xl float-left mr-4 leading-[0.8] font-serif" style={{ color: photographer.colors.primary }}>"</span>
+          {photographer.description} A fotografia não é apenas um registro, é a captura da alma do momento. 
+          Cada clique é uma história contada através da luz e da sombra, eternizando sentimentos que as palavras não conseguem expressar.
+        </p>
+        <div className="mt-12">
+          <img src="/assinatura-fake.png" alt="Assinatura" className="h-16 mx-auto opacity-50" onError={(e) => e.currentTarget.style.display = 'none'} />
+        </div>
+      </section>
+
       {/* Portfólio Clássico - Grid com bordas e texto centralizado */}
       <section id="portfolio" className="container mx-auto px-4 py-12">
         <div className="text-center mb-16">
@@ -185,18 +251,42 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       {/* Services Clássico */}
       <section className="bg-opacity-5 py-24" style={{ backgroundColor: photographer.colors.primary + '10' }}>
         <div className="container mx-auto px-4">
+           <div className="text-center mb-16">
+             <h3 className="text-3xl italic font-serif mb-4">Nossos Serviços</h3>
+             <div className="w-24 h-[1px] bg-current mx-auto opacity-30"></div>
+           </div>
            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
              {photographer.services.map((service) => (
-               <div key={service.id} className="px-6">
-                 <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full border border-current opacity-70">
+               <div key={service.id} className="px-6 group hover:-translate-y-2 transition-transform duration-500">
+                 <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full border border-current opacity-70 group-hover:bg-[var(--primary)] group-hover:text-white group-hover:border-transparent transition-all" style={{ '--primary': photographer.colors.primary } as any}>
                    <Star size={24} />
                  </div>
-                 <h4 className="text-xl mb-4 font-bold">{service.title}</h4>
-                 <p className="font-sans font-light opacity-80 leading-relaxed">{service.description}</p>
+                 <h4 className="text-xl mb-4 font-bold font-serif">{service.title}</h4>
+                 <p className="font-sans font-light opacity-80 leading-relaxed text-sm">{service.description}</p>
+                 <ul className="mt-6 space-y-2 text-xs font-sans uppercase tracking-widest opacity-60">
+                   {service.features.slice(0, 3).map((f, i) => <li key={i}>{f}</li>)}
+                 </ul>
                </div>
              ))}
            </div>
         </div>
+      </section>
+
+      {/* Contact Clássico */}
+      <section className="py-24 px-4 text-center">
+        <div className="max-w-xl mx-auto border-y border-double border-gray-200 dark:border-gray-800 py-12">
+          <h3 className="text-4xl italic font-serif mb-6">Solicite um Orçamento</h3>
+          <p className="font-sans text-gray-500 mb-8">Disponível para casamentos e ensaios em todo o Brasil.</p>
+          <Button 
+            className="rounded-none px-12 py-6 uppercase tracking-widest text-xs font-sans hover:opacity-80 transition-opacity"
+            style={{ backgroundColor: photographer.colors.primary, color: 'white' }}
+          >
+            Entrar em Contato
+          </Button>
+        </div>
+        <footer className="mt-24 text-xs uppercase tracking-[0.3em] opacity-40 font-sans">
+          {photographer.name} © {new Date().getFullYear()}
+        </footer>
       </section>
     </div>
   );
@@ -239,6 +329,26 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           >
             {photographer.description}
           </motion.p>
+        </div>
+      </section>
+
+      {/* About Moderno */}
+      <section className="py-32 px-6 md:px-20 bg-zinc-100 dark:bg-zinc-900/50">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+           <div>
+             <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-[0.9]">
+               ALÉM DA<br/>
+               IMAGEM.
+             </h2>
+           </div>
+           <div>
+             <p className="text-xl md:text-2xl leading-relaxed opacity-80 mb-8">
+               {photographer.description}
+             </p>
+             <p className="text-lg opacity-60">
+               Nosso objetivo é transformar o ordinário em extraordinário. Utilizamos técnicas avançadas de iluminação e composição para criar narrativas visuais impactantes.
+             </p>
+           </div>
         </div>
       </section>
 
@@ -285,11 +395,30 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
                   <span className="text-sm font-normal text-zinc-500">0{i+1}</span>
                   {service.title}
                 </h3>
-                <p className="text-gray-400">{service.description}</p>
+                <p className="text-gray-400 mb-4">{service.description}</p>
+                <ul className="flex flex-wrap gap-3 text-sm text-zinc-500">
+                   {service.features.map((f, j) => <li key={j}># {f}</li>)}
+                </ul>
               </div>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Contact Moderno */}
+      <section className="py-32 px-6 md:px-20 bg-black text-white text-center">
+        <h2 className="text-[10vw] font-bold tracking-tighter leading-none mb-8 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-white hover:to-gray-500 transition-all cursor-default">
+          LET'S TALK
+        </h2>
+        <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-16 text-xl">
+           <a href="#" className="hover:underline decoration-2 underline-offset-4">hello@{photographer.id}.com</a>
+           <a href="#" className="hover:underline decoration-2 underline-offset-4">+55 11 99999-9999</a>
+           <a href="#" className="hover:underline decoration-2 underline-offset-4">Instagram</a>
+        </div>
+        <footer className="mt-32 border-t border-zinc-800 pt-8 flex justify-between text-sm text-zinc-500">
+           <p>© {new Date().getFullYear()} {photographer.name}</p>
+           <p>Design by Fotografo Landing Page</p>
+        </footer>
       </section>
     </div>
   );
@@ -354,17 +483,56 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           </div>
         </section>
 
-        {/* Info Section */}
-        <section className="bg-white/10 backdrop-blur-md rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+        {/* Artistic Services */}
+        <section className="mb-32">
+           <h2 className="text-5xl md:text-7xl font-black mb-16 text-center tracking-tighter">O PROCESSO</h2>
+           <div className="grid md:grid-cols-3 gap-8">
+             {photographer.services.map((service, i) => (
+               <motion.div 
+                 key={i}
+                 whileHover={{ y: -20 }}
+                 className="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-[2rem] relative overflow-hidden"
+               >
+                 <div className="absolute -right-4 -top-4 text-9xl font-black opacity-5 select-none">{i+1}</div>
+                 <h3 className="text-2xl font-bold mb-4 relative z-10">{service.title}</h3>
+                 <p className="opacity-70 mb-6 relative z-10">{service.description}</p>
+                 <div className="flex flex-wrap gap-2 relative z-10">
+                   {service.features.map((f, j) => (
+                     <span key={j} className="px-3 py-1 bg-white/10 rounded-full text-xs font-bold uppercase tracking-wider">{f}</span>
+                   ))}
+                 </div>
+               </motion.div>
+             ))}
+           </div>
+        </section>
+
+        {/* Info Section / Contact */}
+        <section className="bg-white/10 backdrop-blur-md rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden mb-20">
           <h2 className="text-4xl md:text-6xl font-black mb-8 relative z-10">Vamos criar algo único?</h2>
           <p className="text-xl mb-12 max-w-2xl mx-auto relative z-10">{photographer.description}</p>
+          
+          <div className="flex flex-col md:flex-row justify-center gap-6 relative z-10 mb-12">
+             <div className="bg-white/5 p-6 rounded-2xl backdrop-blur-sm">
+                <Mail className="mx-auto mb-2 opacity-70" />
+                <p>art@example.com</p>
+             </div>
+             <div className="bg-white/5 p-6 rounded-2xl backdrop-blur-sm">
+                <Phone className="mx-auto mb-2 opacity-70" />
+                <p>+55 11 99999-9999</p>
+             </div>
+          </div>
+
           <Button 
-            className="rounded-full px-12 py-8 text-xl font-bold relative z-10 hover:scale-110 transition-transform"
+            className="rounded-full px-12 py-8 text-xl font-bold relative z-10 hover:scale-110 transition-transform shadow-xl"
             style={{ backgroundColor: photographer.colors.primary, color: 'white' }}
           >
-            Fale Comigo
+            Iniciar Projeto
           </Button>
         </section>
+        
+        <footer className="text-center opacity-30 text-sm font-bold uppercase tracking-widest pb-8">
+          Designed for {photographer.name}
+        </footer>
       </div>
     </div>
   );
@@ -422,8 +590,33 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         </div>
       </section>
 
+      {/* Corporate About */}
+      <section className="py-20 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+         <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+            <div className="relative h-[400px] rounded-lg overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop" alt="Office" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-blue-900/20"></div>
+            </div>
+            <div>
+               <h2 className="text-3xl font-bold mb-6 text-slate-800 dark:text-white">Excelência em Fotografia Corporativa</h2>
+               <p className="text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                 Com mais de 10 anos de experiência no mercado, nossa equipe entende a importância de uma imagem sólida para sua empresa. 
+                 Trabalhamos com equipamentos de última geração e uma visão estratégica para alinhar cada clique aos valores da sua marca.
+               </p>
+               <ul className="space-y-4">
+                 {['Equipe Especializada', 'Entrega em Alta Resolução', 'Cobertura Nacional', 'Atendimento Personalizado'].map((item, i) => (
+                   <li key={i} className="flex items-center gap-3 text-slate-700 dark:text-slate-200 font-medium">
+                     <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">✓</div>
+                     {item}
+                   </li>
+                 ))}
+               </ul>
+            </div>
+         </div>
+      </section>
+
       {/* Services Grid */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-900">
+      <section className="py-20 bg-white dark:bg-slate-800">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Nossas Soluções</h2>
@@ -431,12 +624,20 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {photographer.services.map((service) => (
-              <div key={service.id} className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+              <div key={service.id} className="bg-slate-50 dark:bg-slate-900 p-8 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-all hover:-translate-y-1">
                 <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-6">
                   <Aperture size={24} />
                 </div>
                 <h3 className="text-xl font-bold mb-3">{service.title}</h3>
                 <p className="text-slate-500 mb-6">{service.description}</p>
+                <ul className="mb-6 space-y-2">
+                   {service.features.slice(0, 3).map((f, i) => (
+                     <li key={i} className="text-sm text-slate-400 flex items-center gap-2">
+                       <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                       {f}
+                     </li>
+                   ))}
+                </ul>
                 <a href="#" className="text-blue-600 font-semibold flex items-center gap-1 text-sm hover:gap-2 transition-all">
                   Saiba mais <ArrowRight size={16} />
                 </a>
@@ -447,22 +648,25 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       </section>
 
       {/* Portfolio Grid */}
-      <section className="py-20 bg-white dark:bg-slate-800">
+      <section className="py-20 bg-slate-50 dark:bg-slate-900">
         <div className="container mx-auto px-4">
            <h2 className="text-3xl font-bold mb-12">Cases de Sucesso</h2>
            <div className="grid md:grid-cols-3 gap-8">
              {photographer.portfolio.map((item) => (
                <div 
                  key={item.id} 
-                 className="group cursor-pointer rounded-lg overflow-hidden shadow-sm"
+                 className="group cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-800"
                  onClick={() => goToAlbum(item.id)}
                >
                  <div className="relative overflow-hidden aspect-video">
-                   <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                   <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                   <div className="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded shadow">
+                     CASE
+                   </div>
                  </div>
-                 <div className="p-6 bg-white dark:bg-slate-800 border border-t-0 border-slate-100 dark:border-slate-700">
-                   <p className="text-xs font-bold text-blue-600 uppercase mb-2">{item.category}</p>
-                   <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                 <div className="p-6 border border-t-0 border-slate-100 dark:border-slate-700">
+                   <p className="text-xs font-bold text-blue-600 uppercase mb-2 tracking-wider">{item.category}</p>
+                   <h3 className="font-bold text-lg mb-2 text-slate-800 dark:text-slate-100">{item.title}</h3>
                    <p className="text-slate-500 text-sm line-clamp-2">{item.description}</p>
                  </div>
                </div>
@@ -470,6 +674,62 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
            </div>
         </div>
       </section>
+
+      {/* Corporate Contact / Footer */}
+      <footer className="bg-slate-900 text-slate-300 py-16">
+        <div className="container mx-auto px-4 grid md:grid-cols-4 gap-12">
+           <div className="col-span-1 md:col-span-2">
+             <div className="flex items-center gap-2 mb-6 text-white">
+                <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">
+                  {photographer.name.charAt(0)}
+                </div>
+                <span className="font-bold text-xl">{photographer.name}</span>
+             </div>
+             <p className="max-w-md text-slate-400 mb-8">
+               Transformando a identidade da sua empresa através de imagens profissionais de alto impacto.
+             </p>
+             <div className="flex gap-4">
+               {socialLinks.map((social, i) => (
+                 <a key={i} href="#" className="w-10 h-10 rounded bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors">
+                   <social.icon size={18} />
+                 </a>
+               ))}
+             </div>
+           </div>
+           
+           <div>
+             <h4 className="text-white font-bold mb-6">Links Rápidos</h4>
+             <ul className="space-y-4 text-sm">
+               <li><a href="#" className="hover:text-blue-400 transition-colors">Home</a></li>
+               <li><a href="#" className="hover:text-blue-400 transition-colors">Sobre Nós</a></li>
+               <li><a href="#" className="hover:text-blue-400 transition-colors">Serviços</a></li>
+               <li><a href="#" className="hover:text-blue-400 transition-colors">Portfólio</a></li>
+               <li><a href="#" className="hover:text-blue-400 transition-colors">Contato</a></li>
+             </ul>
+           </div>
+
+           <div>
+             <h4 className="text-white font-bold mb-6">Contato</h4>
+             <ul className="space-y-4 text-sm">
+               <li className="flex items-start gap-3">
+                 <MapPin size={18} className="text-blue-500 mt-1" />
+                 <span>Av. Paulista, 1000 - Bela Vista<br/>São Paulo - SP</span>
+               </li>
+               <li className="flex items-center gap-3">
+                 <Phone size={18} className="text-blue-500" />
+                 <span>+55 11 3333-4444</span>
+               </li>
+               <li className="flex items-center gap-3">
+                 <Mail size={18} className="text-blue-500" />
+                 <span>contato@corporativo.com</span>
+               </li>
+             </ul>
+           </div>
+        </div>
+        <div className="container mx-auto px-4 mt-16 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
+          © {new Date().getFullYear()} {photographer.name}. Todos os direitos reservados.
+        </div>
+      </footer>
     </div>
   );
 
@@ -532,6 +792,30 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         </div>
       </section>
 
+      {/* Services Criativo */}
+      <section className="py-24 px-4 container mx-auto">
+        <h2 className="text-5xl font-black text-center mb-16 text-[#881337] uppercase transform -rotate-2">O que eu faço</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+           {photographer.services.map((service, i) => (
+             <div key={i} className={`p-8 rounded-[2rem] border-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all ${
+               i % 3 === 0 ? 'bg-[#fff1f2] border-[#f43f5e]' : 
+               i % 3 === 1 ? 'bg-[#f0fdf4] border-[#22c55e]' : 
+               'bg-[#fefce8] border-[#eab308]'
+             }`}>
+                <h3 className="text-2xl font-black mb-4 uppercase">{service.title}</h3>
+                <p className="font-bold opacity-70 mb-6">{service.description}</p>
+                <ul className="space-y-2 font-mono text-sm">
+                  {service.features.map((f, j) => (
+                    <li key={j} className="flex items-center gap-2">
+                      <span className="text-xl leading-none">☺</span> {f}
+                    </li>
+                  ))}
+                </ul>
+             </div>
+           ))}
+        </div>
+      </section>
+
       {/* Galeria Criativa - Cards Coloridos */}
       <section className="py-24 px-4 container mx-auto">
         <h2 className="text-5xl font-black text-center mb-16 text-[#881337]">Meus Cliques</h2>
@@ -553,6 +837,34 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
              </motion.div>
            ))}
         </div>
+      </section>
+
+      {/* Contact Criativo */}
+      <section className="py-32 bg-[#f43f5e] text-white text-center relative overflow-hidden">
+         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, #fff 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+         <div className="container mx-auto px-4 relative z-10">
+            <h2 className="text-6xl md:text-8xl font-black mb-8 transform -rotate-3 text-yellow-300 drop-shadow-[4px_4px_0px_rgba(0,0,0,0.2)]">
+              Diga Oi!
+            </h2>
+            <p className="text-2xl font-bold mb-12 max-w-2xl mx-auto">
+              Pronto para criar memórias incríveis e coloridas juntos?
+            </p>
+            <div className="flex justify-center gap-6 mb-16">
+              <Button className="bg-white text-[#f43f5e] hover:bg-yellow-300 hover:text-black text-xl font-black px-12 py-8 rounded-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] border-4 border-transparent hover:border-black transition-all">
+                 Me manda um zap!
+              </Button>
+            </div>
+            <div className="flex justify-center gap-8">
+              {socialLinks.map((social, i) => (
+                <a key={i} href="#" className="text-white hover:text-yellow-300 transform hover:scale-125 transition-transform">
+                  <social.icon size={32} />
+                </a>
+              ))}
+            </div>
+            <footer className="mt-20 font-mono text-sm opacity-60">
+              © {new Date().getFullYear()} Feito com amor e cores.
+            </footer>
+         </div>
       </section>
     </div>
   );

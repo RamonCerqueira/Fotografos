@@ -445,6 +445,7 @@ export const demoPhotographers: Record<string, DemoPhotographerData> = {
     tagline: 'Fotógrafo de Natureza e Aventura',
     description: 'Especializado em fotografia de natureza, viagens e aventura com composição épica e cores naturais.',
     specialty: 'Natureza',
+    heroImage: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1200&h=800&fit=crop',
     colors: {
       primary: '#06A77D',
       accent: '#D62828',
