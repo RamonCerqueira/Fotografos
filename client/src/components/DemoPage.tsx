@@ -897,131 +897,194 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
   const renderCreative = () => (
     <div className={`min-h-screen font-sans ${theme === 'dark' ? 'bg-[#18181b] text-white' : 'bg-[#fff1f2] text-[#be123c]'}`}>
       <div className="fixed top-6 right-6 z-50">
-        <div className="bg-white dark:bg-zinc-800 rounded-full p-2 shadow-xl border-4 border-[#fda4af]">
-          <div className="w-12 h-12 rounded-full bg-[#fb7185] flex items-center justify-center text-white font-bold animate-pulse">
+        <div className="bg-white dark:bg-zinc-800 rounded-full p-2 shadow-xl border-4 border-[#fda4af] hover:scale-110 transition-transform cursor-pointer">
+          <div className="w-12 h-12 rounded-full bg-[#fb7185] flex items-center justify-center text-white font-bold">
             HI!
           </div>
         </div>
       </div>
 
-      {/* Hero Criativo */}
+      {/* Hero Criativo Modernizado */}
       <section className="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
+        {/* Background Elements */}
         <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"
-          style={{ backgroundColor: photographer.colors.primary, top: '10%', left: '20%' }}
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute w-[800px] h-[800px] rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+          style={{ backgroundColor: photographer.colors.primary, top: '-20%', left: '-10%' }}
         />
         <motion.div 
-          className="absolute w-[500px] h-[500px] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"
-          style={{ backgroundColor: photographer.colors.accent, top: '20%', right: '20%' }}
+          animate={{ scale: [1.2, 1, 1.2], rotate: [0, -90, 0] }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute w-[600px] h-[600px] rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+          style={{ backgroundColor: photographer.colors.accent, bottom: '-10%', right: '-10%' }}
         />
 
-        <div className="relative z-10 text-center">
+        <div className="relative z-10 text-center max-w-5xl">
           <motion.div 
              initial={{ scale: 0, rotate: -180 }}
              animate={{ scale: 1, rotate: 0 }}
              transition={{ type: "spring", bounce: 0.5 }}
-             className="inline-block mb-8 relative"
+             className="inline-block mb-12 relative group"
           >
              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#f43f5e] to-[#fb7185] rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity"></div>
                 <img 
                   src={photographer.heroImage || "https://github.com/shadcn.png"} 
                   alt="Profile" 
-                  className="w-48 h-48 rounded-full object-cover border-8 border-white shadow-2xl" 
+                  className="w-56 h-56 md:w-72 md:h-72 rounded-full object-cover border-8 border-white dark:border-zinc-800 shadow-2xl relative z-10" 
                 />
-                <div className="absolute -bottom-4 -right-4 bg-[#f43f5e] text-white px-6 py-2 rounded-full font-bold transform rotate-[-6deg] shadow-lg">
-                  {photographer.specialty}
-                </div>
+                <motion.div 
+                  whileHover={{ scale: 1.1, rotate: 10 }}
+                  className="absolute -bottom-6 -right-6 bg-[#f43f5e] text-white px-8 py-3 rounded-full font-black transform rotate-[-6deg] shadow-lg z-20 text-lg md:text-xl border-4 border-white dark:border-zinc-800"
+                >
+                  {photographer.specialty} ✨
+                </motion.div>
              </div>
           </motion.div>
 
-          <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#f43f5e] to-[#fb7185] drop-shadow-sm">
+          <h1 className="text-7xl md:text-9xl font-black mb-6 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#f43f5e] to-[#fb7185] drop-shadow-sm leading-none">
             {photographer.name}
           </h1>
-          <p className="text-2xl font-bold opacity-70 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-2xl md:text-4xl font-bold opacity-80 max-w-3xl mx-auto leading-tight mb-12">
             {photographer.tagline}
           </p>
 
-          <div className="mt-12 flex justify-center gap-6">
+          <div className="flex justify-center gap-6">
              {socialLinks.map((social, i) => (
-               <a key={i} href="#" className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-[#f43f5e] hover:scale-125 transition-transform">
-                 <social.icon size={20} />
+               <a key={i} href="#" className="w-14 h-14 rounded-full bg-white dark:bg-zinc-800 shadow-lg flex items-center justify-center text-[#f43f5e] hover:scale-125 hover:rotate-12 transition-all border-2 border-transparent hover:border-[#f43f5e]">
+                 <social.icon size={24} />
                </a>
              ))}
           </div>
         </div>
-      </section>
-
-      {/* Services Criativo */}
-      <section className="py-24 px-4 container mx-auto">
-        <h2 className="text-5xl font-black text-center mb-16 text-[#881337] uppercase transform -rotate-2">O que eu faço</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-           {photographer.services.map((service, i) => (
-             <div key={i} className={`text-black p-8 rounded-[2rem] border-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all ${
-               i % 3 === 0 ? 'bg-[#fff1f2] border-[#f43f5e]' : 
-               i % 3 === 1 ? 'bg-[#f0fdf4] border-[#22c55e]' : 
-               'bg-[#fefce8] border-[#eab308]'
-             }`}>
-                <h3 className="text-2xl font-black mb-4 uppercase">{service.title}</h3>
-                <p className="font-bold opacity-70 mb-6">{service.description}</p>
-                <ul className="space-y-2 font-mono text-sm">
-                  {service.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-2">
-                      <span className="text-xl leading-none">☺</span> {f}
-                    </li>
-                  ))}
-                </ul>
-             </div>
-           ))}
+        
+        <div className="absolute bottom-10 animate-bounce">
+          <ChevronDown size={40} className="text-[#f43f5e]" />
         </div>
       </section>
 
-      {/* Galeria Criativa - Cards Coloridos */}
-      <section className="py-24 px-4 container mx-auto">
-        <h2 className="text-5xl font-black text-center mb-16 text-[#881337]">Meus Cliques</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-           {photographer.portfolio.map((item, index) => (
-             <motion.div
-               key={item.id}
-               whileHover={{ y: -10, rotate: index % 2 === 0 ? 2 : -2 }}
-               className="bg-white rounded-[2rem] p-4 shadow-xl cursor-pointer border-b-8 border-[#f43f5e]"
-               onClick={() => goToAlbum(item.id)}
+      {/* Services Criativo - Cards Modernizados */}
+      <section className="py-32 px-4 container mx-auto">
+        <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
+          <h2 className="text-6xl md:text-8xl font-black text-[#881337] uppercase leading-[0.8]">
+            O que<br/>
+            <span className="text-[#f43f5e]">eu faço</span>
+          </h2>
+          <p className="text-xl font-bold max-w-md text-right opacity-70">
+            Serviços pensados para capturar a essência de cada momento com criatividade.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+           {photographer.services.map((service, i) => (
+             <motion.div 
+               key={i} 
+               whileHover={{ y: -15 }}
+               className="group relative bg-white dark:bg-zinc-800 rounded-[3rem] p-10 shadow-xl border-2 border-transparent hover:border-[#f43f5e] transition-all overflow-hidden"
              >
-               <div className="rounded-[1.5rem] overflow-hidden aspect-square mb-6">
-                 <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-               </div>
-               <h3 className="text-2xl font-bold text-center mb-2 text-[#881337]">{item.title}</h3>
-               <div className="flex justify-center gap-2 mb-4">
-                 <span className="px-3 py-1 bg-[#fff1f2] text-[#f43f5e] rounded-full text-xs font-bold uppercase">{item.category}</span>
-               </div>
+                {/* Background Pattern */}
+                <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-[100px] opacity-20 transition-all group-hover:scale-150 ${
+                  i % 3 === 0 ? 'bg-[#f43f5e]' : 
+                  i % 3 === 1 ? 'bg-[#22c55e]' : 
+                  'bg-[#eab308]'
+                }`} />
+
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-sm ${
+                  i % 3 === 0 ? 'bg-[#fff1f2] text-[#f43f5e]' : 
+                  i % 3 === 1 ? 'bg-[#f0fdf4] text-[#22c55e]' : 
+                  'bg-[#fefce8] text-[#eab308]'
+                }`}>
+                  {i === 0 ? '✨' : i === 1 ? '📸' : '💡'}
+                </div>
+
+                <h3 className="text-3xl font-black mb-4 uppercase leading-none group-hover:text-[#f43f5e] transition-colors">
+                  {service.title}
+                </h3>
+                <p className="font-bold opacity-60 mb-8 leading-relaxed">
+                  {service.description}
+                </p>
+
+                <div className="space-y-3">
+                  {service.features.map((f, j) => (
+                    <div key={j} className="flex items-center gap-3 font-bold text-sm bg-gray-50 dark:bg-zinc-700/50 p-3 rounded-xl group-hover:bg-[#fff1f2] dark:group-hover:bg-[#f43f5e]/10 transition-colors">
+                      <div className={`w-2 h-2 rounded-full ${
+                        i % 3 === 0 ? 'bg-[#f43f5e]' : 
+                        i % 3 === 1 ? 'bg-[#22c55e]' : 
+                        'bg-[#eab308]'
+                      }`} />
+                      {f}
+                    </div>
+                  ))}
+                </div>
              </motion.div>
            ))}
         </div>
       </section>
 
-      {/* Contact Criativo */}
+      {/* Galeria Criativa Modernizada */}
+      <section className="py-32 px-4 container mx-auto bg-white dark:bg-zinc-900 rounded-[4rem] my-20">
+        <div className="text-center mb-20">
+          <span className="bg-[#fff1f2] text-[#f43f5e] px-6 py-2 rounded-full font-black uppercase tracking-widest text-sm mb-6 inline-block">
+            Portfolio
+          </span>
+          <h2 className="text-6xl md:text-8xl font-black text-[#881337] mb-8">Meus Cliques</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-12">
+           {photographer.portfolio.map((item, index) => (
+             <motion.div
+               key={item.id}
+               whileHover={{ scale: 0.98, rotate: 0 }}
+               className={`relative rounded-[2.5rem] overflow-hidden aspect-[4/5] cursor-pointer group ${
+                 index % 2 === 0 ? 'md:translate-y-12' : ''
+               }`}
+               onClick={() => goToAlbum(item.id)}
+             >
+               <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                 <span className="text-[#f43f5e] font-black uppercase tracking-widest text-sm mb-2 bg-white inline-block px-3 py-1 rounded-lg w-fit">
+                   {item.category}
+                 </span>
+                 <h3 className="text-3xl font-bold text-white leading-tight">{item.title}</h3>
+               </div>
+             </motion.div>
+           ))}
+        </div>
+        
+        <div className="text-center mt-32">
+          <Button className="bg-[#f43f5e] hover:bg-[#be123c] text-white text-xl font-black px-12 py-8 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all">
+             Ver Galeria Completa ➔
+          </Button>
+        </div>
+      </section>
+
+      {/* Contact Criativo Modernizado */}
       <section className="py-32 bg-[#f43f5e] text-white text-center relative overflow-hidden">
-         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, #fff 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+         <motion.div 
+           animate={{ rotate: 360 }}
+           transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+           className="absolute -top-[50%] -left-[20%] w-[1000px] h-[1000px] border-[100px] border-white/10 border-dashed rounded-full"
+         />
          <div className="container mx-auto px-4 relative z-10">
-            <h2 className="text-6xl md:text-8xl font-black mb-8 transform -rotate-3 text-yellow-300 drop-shadow-[4px_4px_0px_rgba(0,0,0,0.2)]">
-              Diga Oi!
+            <h2 className="text-7xl md:text-[12rem] font-black mb-8 leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 drop-shadow-sm">
+              DIGA OI!
             </h2>
-            <p className="text-2xl font-bold mb-12 max-w-2xl mx-auto">
-              Pronto para criar memórias incríveis e coloridas juntos?
+            <p className="text-2xl md:text-3xl font-bold mb-16 max-w-3xl mx-auto opacity-90 leading-relaxed">
+              Pronto para criar memórias incríveis e coloridas juntos? Vamos transformar suas ideias em realidade.
             </p>
-            <div className="flex justify-center gap-6 mb-16">
-              <Button className="bg-white text-[#f43f5e] hover:bg-yellow-300 hover:text-black text-xl font-black px-12 py-8 rounded-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] border-4 border-transparent hover:border-black transition-all">
+            
+            <div className="flex flex-col md:flex-row justify-center gap-6 mb-20">
+              <Button className="bg-white text-[#f43f5e] hover:bg-yellow-300 hover:text-black text-xl font-black px-12 py-8 rounded-full shadow-2xl border-4 border-transparent hover:border-black transition-all hover:scale-105">
                  Me manda um zap!
               </Button>
+              <Button variant="outline" className="bg-transparent border-4 border-white text-white hover:bg-white hover:text-[#f43f5e] text-xl font-black px-12 py-8 rounded-full transition-all hover:scale-105">
+                 Enviar E-mail
+              </Button>
             </div>
-            <div className="flex justify-center gap-8">
-              {socialLinks.map((social, i) => (
-                <a key={i} href="#" className="text-white hover:text-yellow-300 transform hover:scale-125 transition-transform">
-                  <social.icon size={32} />
-                </a>
-              ))}
-            </div>
-            <footer className="mt-20 font-mono text-sm opacity-60">
-              © {new Date().getFullYear()} Feito com amor e cores.
+
+            <footer className="font-mono text-sm opacity-60 bg-black/20 inline-block px-6 py-3 rounded-full">
+              © {new Date().getFullYear()} Feito com amor, cores e criatividade.
             </footer>
          </div>
       </section>
