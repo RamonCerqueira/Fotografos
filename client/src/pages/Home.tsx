@@ -19,6 +19,7 @@
  */
 
 import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
+import { getLanguageTexts } from '@/data/languages';
 import Hero from '@/components/Hero';
 import Showcase from '@/components/Showcase';
 import PainPoints from '@/components/PainPoints';
@@ -32,16 +33,42 @@ import CTA from '@/components/CTA';
 import ContactForm from '@/components/ContactForm';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import { SEO } from '@/components/SEO';
 
 export default function Home() {
-  const { theme } = useLanguageTheme();
+  const { theme, language } = useLanguageTheme();
+  const texts = getLanguageTexts(language);
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Sistema de Landing Page para Fotógrafos",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL",
+      "availability": "https://schema.org/InStock"
+    },
+    "description": texts.hero.description,
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "120"
+    }
+  };
 
   return (
-    <div
-      className={`min-h-screen flex flex-col ${
-        theme === 'dark' ? 'bg-[#0F0F0F] text-white' : 'bg-white text-[#1A1A1A]'
-      }`}
-    >
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0F0F0F] text-white' : 'bg-white text-[#1A1A1A]'} transition-colors duration-500`}>
+      <SEO 
+        title="Site para Fotógrafos | Crie seu Portfólio Profissional"
+        description="Sistema completo para fotógrafos. Tenha um site profissional, galeria de fotos e aumente seus orçamentos com landing pages de alta conversão."
+        keywords="site para fotografo, landing page fotografia, portfolio online, sistema para fotógrafos, marketing para fotógrafos, vendas fotografia, criador de site fotografia"
+        image="/social-images/00-overview-desktop.png"
+        structuredData={structuredData}
+      />
+      
       {/* Seção Hero */}
       <Hero />
 

@@ -8,9 +8,11 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'wouter';
 import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
+import { getLanguageTexts } from '@/data/languages';
 import { DemoPhotographerData } from '@/data/demoPortfolios';
 import CameraLensLoader from './CameraLensLoader';
 import { Button } from '@/components/ui/button';
+import { SEO } from '@/components/SEO';
 import { 
   Heart, Camera, Star, ArrowRight, Menu, X, Instagram, Facebook, Twitter, Linkedin, Mail, Phone, MapPin, 
   ChevronDown, ArrowUpRight, Aperture, Image as ImageIcon, Layers 
@@ -24,10 +26,38 @@ interface DemoPageProps {
 }
 
 export default function DemoPage({ photographer, variant = 'moderno' }: DemoPageProps) {
-  const { theme } = useLanguageTheme();
-  const [, setLocation] = useLocation();
+  const { theme, language } = useLanguageTheme();
+  const texts = getLanguageTexts(language);
+  const [location, setLocation] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const seoTitle = `${photographer.name} | ${photographer.tagline}`;
+  const seoDesc = photographer.description;
+  const seoImage = photographer.heroImage || photographer.portfolio[0]?.imageUrl;
+  const fullUrl = `https://fotografos-beta.vercel.app${location}`;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Photographer",
+    "name": photographer.name,
+    "description": photographer.description,
+    "image": seoImage,
+    "url": fullUrl,
+    "priceRange": "$$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "BR"
+    },
+    "makesOffer": photographer.services.map(service => ({
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": service.title,
+        "description": service.description
+      }
+    }))
+  };
 
   const goToAlbum = (albumId: string) => {
     setLocation(`/demo/${photographer.id}/album/${albumId}`);
@@ -50,19 +80,19 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         {/* Menu Desktop */}
         <nav className="hidden md:flex gap-12 text-xs font-medium tracking-[0.2em] uppercase">
           <a href="#portfolio" className="hover:text-[#D4AF37] transition-colors relative group">
-            Portfólio
+            {texts.demo.nav.portfolio}
             <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a href="#services" className="hover:text-[#D4AF37] transition-colors relative group">
-            Serviços
+            {texts.demo.nav.services}
             <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a href="#about" className="hover:text-[#D4AF37] transition-colors relative group">
-            Sobre
+            {texts.demo.nav.about}
             <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a href="#contact" className="hover:text-[#D4AF37] transition-colors relative group">
-            Contato
+            {texts.demo.nav.contact}
             <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
           </a>
         </nav>
@@ -85,10 +115,10 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
               exit={{ opacity: 0, y: -20 }}
               className="fixed inset-0 bg-white dark:bg-black z-40 flex flex-col justify-center items-center gap-8"
             >
-              <a href="#portfolio" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Portfólio</a>
-              <a href="#services" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Serviços</a>
-              <a href="#about" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Sobre</a>
-              <a href="#contact" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">Contato</a>
+              <a href="#portfolio" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">{texts.demo.nav.portfolio}</a>
+              <a href="#services" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">{texts.demo.nav.services}</a>
+              <a href="#about" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">{texts.demo.nav.about}</a>
+              <a href="#contact" onClick={() => setIsMenuOpen(false)} className="text-2xl font-light tracking-widest uppercase hover:text-[#D4AF37]">{texts.demo.nav.contact}</a>
             </motion.div>
           )}
         </AnimatePresence>
@@ -108,7 +138,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           className="relative z-10"
         >
           <span className="block text-xs md:text-sm tracking-[0.5em] uppercase text-[#D4AF37] mb-6">
-            {photographer.specialty} Photography
+            {photographer.specialty} {texts.demo.hero.photography}
           </span>
           <h2 className="text-5xl md:text-8xl lg:text-9xl font-extralight tracking-tighter mb-8 leading-none">
             {photographer.name.split(' ').map((word, i) => (
@@ -138,11 +168,11 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
             className="flex flex-col md:flex-row justify-between items-end mb-24 border-b border-gray-200 dark:border-gray-800 pb-8"
           >
             <div>
-              <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-2">Selected Works</span>
-              <h3 className="text-3xl md:text-5xl font-light">Portfólio</h3>
+              <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-2">{texts.demo.portfolio.selectedWorks}</span>
+              <h3 className="text-3xl md:text-5xl font-light">{texts.demo.portfolio.title}</h3>
             </div>
             <p className="text-sm opacity-50 max-w-xs mt-4 md:mt-0 text-right">
-              Uma curadoria dos momentos mais emocionantes e inesquecíveis.
+              {texts.demo.portfolio.curation}
             </p>
           </motion.div>
 
@@ -190,8 +220,8 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       <section id="services" className="py-32 bg-[#fafafa] dark:bg-[#0c0c0c]">
         <div className="max-w-6xl mx-auto px-6 md:px-12">
           <div className="text-center mb-24">
-            <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-4">O que ofereço</span>
-            <h3 className="text-4xl md:text-5xl font-light">Serviços Exclusivos</h3>
+            <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-4">{texts.demo.services.whatIOffer}</span>
+            <h3 className="text-4xl md:text-5xl font-light">{texts.demo.services.title}</h3>
           </div>
 
           <div className="grid md:grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
@@ -254,8 +284,8 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
             transition={{ duration: 1 }}
             className="w-full md:w-1/2"
           >
-            <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-6">Sobre a Fotógrafa</span>
-            <h3 className="text-4xl md:text-5xl font-light mb-8 leading-tight">Capturando a essência de cada história de amor.</h3>
+            <span className="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase block mb-6">{texts.demo.about.title}</span>
+            <h3 className="text-4xl md:text-5xl font-light mb-8 leading-tight">{texts.demo.about.description}</h3>
             <p className="text-lg opacity-70 font-light leading-relaxed mb-8">
               {photographer.description}
             </p>
@@ -292,15 +322,15 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         <div className="absolute inset-0 bg-black/80"></div>
         
         <div className="relative z-10 max-w-2xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-extralight mb-8">Vamos criar algo belo?</h2>
+          <h2 className="text-4xl md:text-6xl font-extralight mb-8">{texts.demo.contact.title}</h2>
           <p className="text-lg text-gray-300 font-light mb-12 max-w-lg mx-auto">
-            Estou disponível para casamentos e ensaios em todo o mundo. Entre em contato para verificar disponibilidade.
+            {texts.demo.contact.subtitle}
           </p>
           <Button 
             className="bg-white text-black hover:bg-[#D4AF37] hover:text-white rounded-none px-12 py-8 text-xs tracking-[0.2em] uppercase transition-all duration-300"
             onClick={() => window.location.href = `mailto:contato@${photographer.id}.com`}
           >
-            Entrar em Contato
+            {texts.demo.contact.button}
           </Button>
           
           <div className="flex justify-center gap-12 mt-24">
@@ -312,7 +342,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           </div>
           
           <div className="mt-12 pt-12 border-t border-white/10 text-xs text-white/30 tracking-widest uppercase">
-            &copy; {new Date().getFullYear()} {photographer.name}. All Rights Reserved.
+            &copy; {new Date().getFullYear()} {photographer.name}. {texts.demo.footer.rights}
           </div>
         </div>
       </section>
@@ -403,7 +433,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       <section className="bg-opacity-5 py-24" style={{ backgroundColor: photographer.colors.primary + '10' }}>
         <div className="container mx-auto px-4">
            <div className="text-center mb-16">
-             <h3 className="text-3xl italic font-serif mb-4">Nossos Serviços</h3>
+             <h3 className="text-3xl italic font-serif mb-4">{texts.demo.services.solutions}</h3>
              <div className="w-24 h-[1px] bg-current mx-auto opacity-30"></div>
            </div>
            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
@@ -426,13 +456,13 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       {/* Contact Clássico */}
       <section className="py-24 px-4 text-center">
         <div className="max-w-xl mx-auto border-y border-double border-gray-200 dark:border-gray-800 py-12">
-          <h3 className="text-4xl italic font-serif mb-6">Solicite um Orçamento</h3>
-          <p className="font-sans text-gray-500 mb-8">Disponível para casamentos e ensaios em todo o Brasil.</p>
+          <h3 className="text-4xl italic font-serif mb-6">{texts.contactForm.title}</h3>
+          <p className="font-sans text-gray-500 mb-8">{texts.demo.contact.subtitle}</p>
           <Button 
             className="rounded-none px-12 py-6 uppercase tracking-widest text-xs font-sans hover:opacity-80 transition-opacity"
             style={{ backgroundColor: photographer.colors.primary, color: 'white' }}
           >
-            Entrar em Contato
+            {texts.demo.contact.button}
           </Button>
         </div>
         <footer className="mt-24 text-xs uppercase tracking-[0.3em] opacity-40 font-sans">
@@ -572,7 +602,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
           transition={{ delay: 1, duration: 1 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white flex flex-col items-center gap-2"
         >
-          <span className="text-xs uppercase tracking-[0.2em] opacity-70">Scroll Down</span>
+          <span className="text-xs uppercase tracking-[0.2em] opacity-70">{texts.demo.hero.scrollDown}</span>
           <ChevronDown className="animate-bounce" />
         </motion.div>
       </section>
@@ -619,9 +649,12 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
       {/* Portfolio Moderno - Masonry/Grid Assimétrico */}
       <section id="portfolio" className="py-32 px-6 md:px-20 bg-zinc-50 dark:bg-[#0a0a0a]">
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 border-b border-gray-200 dark:border-zinc-800 pb-8">
-          <h2 className="text-6xl md:text-8xl font-bold tracking-tighter uppercase">Selected<br/>Works</h2>
+          <h2 className="text-6xl md:text-8xl font-bold tracking-tighter uppercase">
+            {texts.demo.portfolio.selectedWorks.split(' ')[0]}<br/>
+            {texts.demo.portfolio.selectedWorks.split(' ').slice(1).join(' ')}
+          </h2>
           <div className="flex items-center gap-4 mt-8 md:mt-0">
-            <span className="text-sm uppercase tracking-wider opacity-60">Explorar Galeria</span>
+            <span className="text-sm uppercase tracking-wider opacity-60">{texts.demo.portfolio.viewCollection}</span>
             <ArrowRight className="opacity-60" />
           </div>
         </div>
@@ -639,7 +672,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all z-10 duration-500" />
                 <img src={item.imageUrl} alt={item.title} loading="lazy" className="w-full object-cover aspect-[3/4] grayscale group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute top-4 right-4 bg-white text-black px-4 py-2 text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                  Ver Projeto
+                  {texts.demo.portfolio.viewCollection}
                 </div>
               </div>
               <div className="flex justify-between items-start border-t border-gray-300 dark:border-zinc-800 pt-6">
@@ -655,7 +688,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
         
         <div className="text-center mt-32">
           <Button variant="outline" className="rounded-full px-12 py-8 text-xl uppercase tracking-widest border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
-            Ver Todos os Projetos
+            {texts.demo.portfolio.viewAll}
           </Button>
         </div>
       </section>
@@ -771,7 +804,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
              </h1>
           </div>
           <div className="text-sm font-bold uppercase tracking-widest writing-mode-vertical rotate-180 hidden md:block">
-            {photographer.name} — Portfolio
+            {photographer.name} — {texts.demo.portfolio.title}
           </div>
         </header>
 
@@ -810,7 +843,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
 
         {/* Artistic Services */}
         <section className="mb-32">
-           <h2 className="text-5xl md:text-7xl font-black mb-16 text-center tracking-tighter">O PROCESSO</h2>
+           <h2 className="text-5xl md:text-7xl font-black mb-16 text-center tracking-tighter">{texts.demo.services.process}</h2>
            <div className="grid md:grid-cols-3 gap-8">
              {photographer.services.map((service, i) => (
                <motion.div 
@@ -833,7 +866,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
 
         {/* Info Section / Contact */}
         <section className="bg-white/10 backdrop-blur-md rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden mb-20">
-          <h2 className="text-4xl md:text-6xl font-black mb-8 relative z-10">Vamos criar algo único?</h2>
+          <h2 className="text-4xl md:text-6xl font-black mb-8 relative z-10">{texts.demo.contact.title}</h2>
           <p className="text-xl mb-12 max-w-2xl mx-auto relative z-10">{photographer.description}</p>
           
           <div className="flex flex-col md:flex-row justify-center gap-6 relative z-10 mb-12">
@@ -851,7 +884,7 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
             className="rounded-full px-12 py-8 text-xl font-bold relative z-10 hover:scale-110 transition-transform shadow-xl"
             style={{ backgroundColor: photographer.colors.primary, color: 'white' }}
           >
-            Iniciar Projeto
+            {texts.demo.contact.button}
           </Button>
         </section>
         
@@ -1338,6 +1371,13 @@ export default function DemoPage({ photographer, variant = 'moderno' }: DemoPage
 
   return (
     <>
+      <SEO 
+        title={seoTitle}
+        description={seoDesc}
+        image={seoImage}
+        url={fullUrl}
+        structuredData={structuredData}
+      />
       <AnimatePresence mode="wait">
         {isLoading && (
           <CameraLensLoader key="loader" onComplete={handleLoaderComplete} />

@@ -22,190 +22,217 @@ async function captureScreenshots() {
 
   let browser;
   try {
+    // Tenta encontrar o executável do Chrome
+    const executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+    
+    console.log('🚀 Iniciando navegador...');
     browser = await puppeteer.launch({
-      headless: 'new',
-      executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+      headless: true, // headless: "new" é o padrão agora, mas "true" é mais compatível
+      executablePath: fs.existsSync(executablePath) ? executablePath : undefined,
+      protocolTimeout: 120000, // Aumentar timeout do protocolo para evitar desconexões
       defaultViewport: null,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox',
+        '--window-size=1920,1080',
+        '--font-render-hinting=none', // Melhora renderização de fontes
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process'
+      ],
     });
 
     const page = await browser.newPage();
     
-    // Tentar conectar ao servidor
-    try {
-      console.log('Navegando para ' + BASE_URL + '...');
-      await page.goto(BASE_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      // Dar um tempo extra para garantir que tudo carregou
-      await new Promise(r => setTimeout(r, 5000));
-    } catch (e) {
-      console.error('❌ Erro ao conectar ao servidor:', e.message);
-      console.error('Dica: Abra um novo terminal e rode "npm run dev" antes de executar este script.');
-      // Tentar continuar mesmo com erro de timeout, talvez a página tenha carregado parcialmente
-    }
-
-    // Configurações de Viewport para diferentes formatos
-    const viewports = {
-      story: { width: 1080, height: 1920, deviceScaleFactor: 2 },
-      post: { width: 1080, height: 1350, deviceScaleFactor: 2 }, // 4:5 Portrait
-      square: { width: 1080, height: 1080, deviceScaleFactor: 2 },
-      desktop: { width: 1920, height: 1080, deviceScaleFactor: 2 },
-    };
-
-    // Função auxiliar para capturar com tratamento de erro
-    async function takeScreenshot(name, selector, viewportName = 'post') {
+    // Tentar conectar ao servidor com retries
+    let connected = false;
+    for (let i = 0; i < 3; i++) {
       try {
-        const vp = viewports[viewportName];
-        await page.setViewport(vp);
-        
-        // Aguardar renderização e animações
-        await new Promise(r => setTimeout(r, 1000));
-
-        let element;
-        if (selector === 'full') {
-          element = page;
-          const fileName = `${name}-${viewportName}.png`;
-          const filePath = path.join(OUTPUT_DIR, fileName);
-          await element.screenshot({ path: filePath, fullPage: true });
-          console.log(`✅ Capturado: ${fileName}`);
-          return;
-        }
-
-        if (typeof selector === 'string') {
-            try {
-              await page.waitForSelector(selector, { timeout: 5000 });
-              element = await page.$(selector);
-            } catch (e) {
-              console.warn(`⚠️ Elemento ${selector} não encontrado, tentando buscar por texto...`);
-            }
-        } else {
-            element = selector;
-        }
-
-        if (element) {
-          const fileName = `${name}-${viewportName}.png`;
-          const filePath = path.join(OUTPUT_DIR, fileName);
-          
-          await element.screenshot({
-            path: filePath,
-            type: 'png',
-            omitBackground: false,
-          });
-          console.log(`✅ Capturado: ${fileName}`);
-        } else {
-            console.warn(`⚠️ Elemento não encontrado para ${name}`);
-        }
-      } catch (error) {
-        console.error(`❌ Erro ao capturar ${name}:`, error.message);
+        console.log(`📡 Tentativa de conexão ${i + 1}/3...`);
+        await page.goto(BASE_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        connected = true;
+        break;
+      } catch (e) {
+        console.warn(`⚠️ Falha na conexão: ${e.message}`);
+        await new Promise(r => setTimeout(r, 2000));
       }
     }
 
-    // --- CAPTURAS ESTRATÉGICAS PARA INSTAGRAM ---
-
-    console.log('\n--- Capturando Página Completa (Debug) ---');
-    await takeScreenshot('00-debug', 'full', 'desktop');
-
-    // 1. Hero Section (Impacto Inicial)
-    console.log('\n--- Capturando Hero Section ---');
-    // Tentar encontrar o Hero pelo título H1 ou primeira seção
-    const heroSection = await page.evaluateHandle(() => {
-        const h1 = document.querySelector('h1');
-        return h1 ? h1.closest('section') : document.querySelector('section');
-    });
-    
-    if (heroSection) {
-        await takeScreenshot('01-hero', heroSection, 'story');
-        await takeScreenshot('01-hero', heroSection, 'post');
-    } else {
-        console.warn('⚠️ Hero section não encontrada');
+    if (!connected) {
+      throw new Error('Não foi possível conectar ao servidor local. Verifique se "npm run dev" está rodando.');
     }
 
-    // 2. Benefícios/Pain Points (Problema e Solução)
-    // ... restante do código ...
+    console.log('⏳ Aguardando renderização inicial e animações (5s)...');
+    await new Promise(r => setTimeout(r, 5000));
 
-    // Post 4:5: Foca no texto e ícones
-    console.log('\n--- Capturando Benefícios ---');
-    // Precisamos identificar a seção de benefícios. Geralmente é a 3ª ou 4ª.
-    // Vamos tentar buscar pelo texto ou classe específica se possível.
-    // Como não temos IDs garantidos, vamos tentar pegar seções específicas.
-    
-    // Vamos capturar a página inteira em desktop para referência
-    console.log('\n--- Capturando Página Completa (Desktop) ---');
-    await page.setViewport(viewports.desktop);
-    await page.screenshot({ path: path.join(OUTPUT_DIR, '00-full-page-desktop.png'), fullPage: true });
-    
-    // 3. Portfólio (Prova Visual)
-    // Story: Mostrar a galeria rolando
-    console.log('\n--- Capturando Portfólio ---');
-    // Assumindo que o portfólio tem um ID ou classe identificável. 
-    // O componente Portfolio.tsx geralmente tem um ID ou é uma section.
-    // Vamos tentar encontrar pelo texto "Projetos Desenvolvidos"
-    const portfolioSection = await page.evaluateHandle(() => {
-      const h2s = Array.from(document.querySelectorAll('h2'));
-      const portfolioHeader = h2s.find(h => h.textContent.includes('Projetos Desenvolvidos') || h.textContent.includes('Portfólio'));
-      return portfolioHeader ? portfolioHeader.closest('section') : null;
-    });
+    // Injetar estilos para garantir que screenshots fiquem bonitos (opcional)
+    await page.addStyleTag({ content: 'body { overflow-x: hidden; }' });
 
-    if (portfolioSection) {
-        await portfolioSection.screenshot({ path: path.join(OUTPUT_DIR, '02-portfolio-post.png') });
-        console.log('✅ Capturado: 02-portfolio-post.png');
-    } else {
-        console.warn('⚠️ Seção de Portfólio não encontrada automaticamente.');
+    // Configurações de Viewport para diferentes formatos
+    const viewports = {
+      story: { width: 1080, height: 1920, deviceScaleFactor: 2, isMobile: true },
+      post: { width: 1080, height: 1350, deviceScaleFactor: 2, isMobile: true }, // 4:5 Portrait
+      square: { width: 1080, height: 1080, deviceScaleFactor: 2, isMobile: true },
+      desktop: { width: 1920, height: 1080, deviceScaleFactor: 2, isMobile: false },
+    };
+
+    // Função auxiliar robusta para capturar
+    async function takeScreenshot(name, selectorOrElement, viewportName = 'post') {
+      const vp = viewports[viewportName];
+      await page.setViewport(vp);
+      
+      // Pequeno delay após mudar viewport para layout se ajustar
+      await new Promise(r => setTimeout(r, 1000));
+
+      const fileName = `${name}-${viewportName}.png`;
+      const filePath = path.join(OUTPUT_DIR, fileName);
+
+      try {
+        if (selectorOrElement === 'full') {
+          await page.screenshot({ path: filePath, fullPage: true });
+          console.log(`✅ Capturado (Full Page): ${fileName}`);
+          return;
+        }
+
+        let element;
+        if (typeof selectorOrElement === 'string') {
+          try {
+            await page.waitForSelector(selectorOrElement, { timeout: 5000 });
+            element = await page.$(selectorOrElement);
+          } catch (e) {
+            console.warn(`⚠️ Elemento "${selectorOrElement}" não encontrado.`);
+          }
+        } else {
+          element = selectorOrElement;
+        }
+
+        if (element) {
+          // Tentar capturar o elemento específico
+          try {
+            await element.screenshot({ path: filePath });
+            console.log(`✅ Capturado (Elemento): ${fileName}`);
+          } catch (e) {
+            // Se falhar (ex: Node has 0 height), captura a viewport inteira como fallback
+            console.warn(`⚠️ Falha ao capturar elemento "${name}" (${e.message}). Capturando viewport...`);
+            await page.screenshot({ path: filePath });
+            console.log(`✅ Capturado (Fallback Viewport): ${fileName}`);
+          }
+        } else {
+          console.warn(`⚠️ Elemento não disponível para captura: ${name}`);
+        }
+      } catch (error) {
+        console.error(`❌ Erro fatal ao capturar ${name}:`, error.message);
+      }
     }
 
-    // 4. Serviços (O que oferecemos)
-    console.log('\n--- Capturando Serviços ---');
-    const servicesSection = await page.evaluateHandle(() => {
-        const h2s = Array.from(document.querySelectorAll('h2'));
-        const header = h2s.find(h => h.textContent.includes('Soluções para Fotógrafos') || h.textContent.includes('Serviços'));
-        return header ? header.closest('section') : null;
-    });
+    // --- ROTEIRO DE CAPTURA ---
 
-    if (servicesSection) {
-        await servicesSection.screenshot({ path: path.join(OUTPUT_DIR, '03-services-post.png') });
-        console.log('✅ Capturado: 03-services-post.png');
+    // 0. Debug - Página inteira Desktop
+    console.log('\n--- 0. Capturando Página Completa (Referência) ---');
+    await takeScreenshot('00-overview', 'full', 'desktop');
+
+    // 1. Hero Section (A primeira impressão)
+    console.log('\n--- 1. Capturando Hero Section ---');
+    // Estratégia: Pegar a primeira section que contém um H1
+    const heroSelector = 'section:has(h1)';
+    await takeScreenshot('01-hero-impact', heroSelector, 'story');
+    await takeScreenshot('01-hero-impact', heroSelector, 'post');
+
+    // 2. Benefícios (Geralmente a segunda ou terceira seção com grid)
+    console.log('\n--- 2. Capturando Benefícios/Pain Points ---');
+    // Tentar identificar por texto
+    const benefitsHandle = await page.evaluateHandle(() => {
+      const elements = Array.from(document.querySelectorAll('h2, h3'));
+      const target = elements.find(el => 
+        el.textContent.includes('Problemas') || 
+        el.textContent.includes('Benefícios') ||
+        el.textContent.includes('Por que ter')
+      );
+      return target ? target.closest('section') : null;
+    });
+    if (benefitsHandle) {
+      await takeScreenshot('02-benefits', benefitsHandle, 'post');
+    }
+
+    // 3. Portfólio (Visualmente rico)
+    console.log('\n--- 3. Capturando Portfólio ---');
+    try {
+      const portfolioHandle = await page.evaluateHandle(() => {
+        const elements = Array.from(document.querySelectorAll('h2'));
+        const target = elements.find(el => el.textContent.includes('Projetos Desenvolvidos') || el.textContent.includes('Portfólio'));
+        return target ? target.closest('section') : null;
+      });
+      const portfolioElement = portfolioHandle.asElement();
+      if (portfolioElement) {
+        // Scroll para o elemento antes de capturar para ativar animações
+        await portfolioElement.scrollIntoView();
+        await new Promise(r => setTimeout(r, 1000));
+        await takeScreenshot('03-portfolio', portfolioElement, 'post');
+        // await takeScreenshot('03-portfolio', portfolioElement, 'story'); // Story pode ser muito alto e falhar
+      } else {
+        console.warn('⚠️ Seção Portfólio não encontrada pelo título.');
+      }
+    } catch (e) {
+      console.warn('⚠️ Erro ao tentar capturar Portfólio:', e.message);
+    }
+
+    // 4. Serviços (O que é oferecido)
+    console.log('\n--- 4. Capturando Serviços ---');
+    const servicesHandle = await page.evaluateHandle(() => {
+      const elements = Array.from(document.querySelectorAll('h2'));
+      const target = elements.find(el => el.textContent.includes('Soluções para Fotógrafos') || el.textContent.includes('Serviços'));
+      return target ? target.closest('section') : null;
+    });
+    const servicesElement = servicesHandle.asElement();
+    if (servicesElement) {
+      await takeScreenshot('04-services', servicesElement, 'post');
     }
 
     // 5. Preços (Oferta)
-    console.log('\n--- Capturando Preços ---');
-    const pricingSection = await page.evaluateHandle(() => {
-        const h2s = Array.from(document.querySelectorAll('h2'));
-        const header = h2s.find(h => h.textContent.includes('Escolha o Plano') || h.textContent.includes('Preços'));
-        return header ? header.closest('section') : null;
+    console.log('\n--- 5. Capturando Preços ---');
+    const pricingHandle = await page.evaluateHandle(() => {
+      const elements = Array.from(document.querySelectorAll('h2'));
+      const target = elements.find(el => el.textContent.includes('Escolha o Plano') || el.textContent.includes('Planos'));
+      return target ? target.closest('section') : null;
     });
-
-    if (pricingSection) {
-        await pricingSection.screenshot({ path: path.join(OUTPUT_DIR, '04-pricing-post.png') });
-        console.log('✅ Capturado: 04-pricing-post.png');
+    const pricingElement = pricingHandle.asElement();
+    if (pricingElement) {
+      await takeScreenshot('05-pricing', pricingElement, 'post');
     }
 
     // 6. Depoimentos (Prova Social)
-    console.log('\n--- Capturando Depoimentos ---');
-    const testimonialsSection = await page.evaluateHandle(() => {
-        const h2s = Array.from(document.querySelectorAll('h2'));
-        const header = h2s.find(h => h.textContent.includes('Depoimentos') || h.textContent.includes('O que dizem'));
-        return header ? header.closest('section') : null;
+    console.log('\n--- 6. Capturando Depoimentos ---');
+    const testimonialsHandle = await page.evaluateHandle(() => {
+      const elements = Array.from(document.querySelectorAll('h2'));
+      const target = elements.find(el => el.textContent.includes('O que dizem') || el.textContent.includes('Depoimentos'));
+      return target ? target.closest('section') : null;
     });
-
-    if (testimonialsSection) {
-        await testimonialsSection.screenshot({ path: path.join(OUTPUT_DIR, '05-testimonials-post.png') });
-        console.log('✅ Capturado: 05-testimonials-post.png');
+    const testimonialsElement = testimonialsHandle.asElement();
+    if (testimonialsElement) {
+      await takeScreenshot('06-testimonials', testimonialsElement, 'square');
     }
 
-    // 7. CTA Final + Footer
-    console.log('\n--- Capturando CTA e Footer ---');
-    await page.setViewport(viewports.post);
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await new Promise(r => setTimeout(r, 500)); // Esperar scroll
-    await page.screenshot({ path: path.join(OUTPUT_DIR, '06-footer-cta.png') });
-    console.log('✅ Capturado: 06-footer-cta.png');
+    // 7. Call to Action Final
+    console.log('\n--- 7. Capturando CTA Final ---');
+    // Geralmente a penúltima seção antes do footer
+    const ctaHandle = await page.evaluateHandle(() => {
+      const sections = document.querySelectorAll('section');
+      // Tentar pegar a última section que não seja o footer
+      if (sections.length > 0) return sections[sections.length - 1];
+      return null;
+    });
+    const ctaElement = ctaHandle.asElement();
+    if (ctaElement) {
+      await takeScreenshot('07-cta', ctaElement, 'post');
+    }
 
-    console.log('\n✨ Concluído! Verifique a pasta "social-images" na raiz do projeto.');
+    console.log('\n✨ Processo concluído! Verifique a pasta "social-images".');
 
   } catch (error) {
-    console.error('❌ Erro fatal:', error);
+    console.error('❌ Erro fatal no script:', error);
   } finally {
     if (browser) {
       await browser.close();
+      console.log('🔒 Navegador fechado.');
     }
   }
 }

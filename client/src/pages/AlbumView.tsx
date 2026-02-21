@@ -4,6 +4,7 @@ import { useLocation, useRoute } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
 import { demoPhotographers } from '@/data/demoPortfolios';
+import { SEO } from '@/components/SEO';
 
 export default function AlbumView() {
   const { theme } = useLanguageTheme();
@@ -49,13 +50,39 @@ export default function AlbumView() {
     featured: index % 6 === 0 // Highlight every 6th image
   }));
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    "name": portfolioItem.title,
+    "description": portfolioItem.description,
+    "author": {
+      "@type": "Person",
+      "name": photographer.name
+    },
+    "image": galleryImages.map(img => img.src)
+  };
+
   const backgroundClass =
     theme === 'dark'
       ? 'bg-[#0F0F0F] text-white'
       : 'bg-white text-[#1A1A1A]';
 
+  const seoTitle = `${portfolioItem.title} - ${photographer.name}`;
+  const seoDesc = `Confira o álbum ${portfolioItem.title}. ${portfolioItem.description}`;
+  const seoImage = portfolioItem.imageUrl;
+  const fullUrl = `https://fotografos-beta.vercel.app/demo/${photographer.id}/album/${portfolioItem.id}`;
+
   return (
-    <div className={`min-h-screen ${backgroundClass} transition-colors duration-500`}>
+    <>
+      <SEO 
+        title={seoTitle}
+        description={seoDesc}
+        image={seoImage}
+        url={fullUrl}
+        structuredData={structuredData}
+      />
+      <div className={`min-h-screen ${backgroundClass} transition-colors duration-500`}>
+
       {/* Navigation Bar */}
       <nav className={`sticky top-0 z-40 backdrop-blur-md border-b ${theme === 'dark' ? 'bg-[#0F0F0F]/80 border-[#2A2A2A]' : 'bg-white/80 border-[#E5E5E5]'}`}>
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -155,5 +182,6 @@ export default function AlbumView() {
         </div>
       </main>
     </div>
+    </>
   );
 }
