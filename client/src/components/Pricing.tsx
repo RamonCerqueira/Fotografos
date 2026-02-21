@@ -18,7 +18,8 @@ import { Check } from 'lucide-react';
 
 export default function Pricing() {
   const { ref, controls } = useScrollReveal();
-  const { theme } = useLanguageTheme();
+  const { theme, language } = useLanguageTheme();
+  const texts = getLanguageTexts(language);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -72,14 +73,14 @@ export default function Pricing() {
               theme === 'dark' ? 'text-white' : 'text-[#1A1A1A]'
             }`}
           >
-            Escolha o Plano Perfeito
+            {texts.pricing.title}
           </h2>
           <p
             className={`text-body max-w-2xl mx-auto ${
               theme === 'dark' ? 'text-[#CCCCCC]' : 'text-[#666666]'
             }`}
           >
-            Planos flexíveis para fotógrafos de todos os tamanhos. Comece pequeno e escale conforme seu negócio cresce.
+            {texts.pricing.subtitle}
           </p>
         </motion.div>
 
@@ -113,7 +114,7 @@ export default function Pricing() {
                     animate={{ scale: [1, 1.05, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    🌟 MAIS POPULAR
+                    🌟 {texts.pricing.popular}
                   </motion.div>
                 </div>
               )}
@@ -159,7 +160,7 @@ export default function Pricing() {
                       theme === 'dark' ? 'text-[#999999]' : 'text-[#666666]'
                     }`}
                   >
-                    pague com pix e ganhe 10% de desconto
+                    {texts.pricing.discount}
                   </p>
                 </div>
 
@@ -178,7 +179,7 @@ export default function Pricing() {
                         : 'bg-white text-[#1A1A1A] border border-[#D4AF37] hover:bg-[#F5F5F5]'
                     }`}
                   >
-                    {plan.cta}
+                    {plan.cta || texts.pricing.cta}
                   </Button>
                 </motion.div>
 
@@ -227,7 +228,7 @@ export default function Pricing() {
               theme === 'dark' ? 'text-[#999999]' : 'text-[#666666]'
             }`}
           >
-            Todos os planos incluem suporte técnico, atualizações e garantia de satisfação de 30 dias.
+            {texts.pricing.footerNote}
           </p>
         </motion.div>
       </div>

@@ -23,7 +23,7 @@ async function startServer() {
 
   // Email sending endpoint
   app.post("/api/send-email", async (req, res) => {
-    const { name, whatsapp, message, plan, layoutModel } = req.body;
+    const { name, whatsapp, message, plan, layoutModel, currentSite, instagram } = req.body;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -42,6 +42,8 @@ async function startServer() {
         
         Nome: ${name}
         WhatsApp: ${whatsapp}
+        ${instagram ? `Instagram: ${instagram}` : ""}
+        ${currentSite ? `Site Atual: ${currentSite}` : ""}
         ${plan ? `Plano Escolhido: ${plan}` : ""}
         ${layoutModel ? `Modelo de Layout: ${layoutModel}` : ""}
         
@@ -52,6 +54,8 @@ async function startServer() {
         <h3>Novo contato recebido através do site</h3>
         <p><strong>Nome:</strong> ${name}</p>
         <p><strong>WhatsApp:</strong> ${whatsapp}</p>
+        ${instagram ? `<p><strong>Instagram:</strong> ${instagram}</p>` : ""}
+        ${currentSite ? `<p><strong>Site Atual:</strong> ${currentSite}</p>` : ""}
         ${plan ? `<p><strong>Plano Escolhido:</strong> ${plan}</p>` : ""}
         ${layoutModel ? `<p><strong>Modelo de Layout:</strong> ${layoutModel}</p>` : ""}
         <br/>

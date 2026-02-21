@@ -38,6 +38,17 @@ export interface LanguageTexts {
     subtitle: string;
   };
 
+  // Pricing Section
+  pricing: {
+    title: string;
+    subtitle: string;
+    popular: string;
+    features: string;
+    cta: string;
+    discount: string;
+    footerNote: string;
+  };
+
   // Testimonials Section
   testimonials: {
     title: string;
@@ -66,12 +77,15 @@ export interface LanguageTexts {
     labels: {
       name: string;
       whatsapp: string;
-      ensaioType: string;
+      instagram: string;
+      currentSite: string;
       message: string;
     };
     placeholders: {
       name: string;
       whatsapp: string;
+      instagram: string;
+      currentSite: string;
       message: string;
     };
     submit: string;
@@ -104,74 +118,86 @@ export interface LanguageTexts {
 // Português
 export const pt: LanguageTexts = {
   hero: {
-    title: 'Fotografia Profissional em Gramado e Serra Gaúcha',
+    title: 'Seu Portfólio Fotográfico em Outro Nível',
     subtitle:
-      'Eternizando momentos especiais com sensibilidade e técnica. Casamentos, ensaios e eventos corporativos na cidade mais charmosa do Brasil.',
-    cta: 'Solicitar Orçamento',
+      'Transforme visitantes em clientes com uma Landing Page de alta conversão, moderna e otimizada para fotógrafos.',
+    cta: 'Quero meu Site Profissional',
   },
   painPoints: {
-    title: 'Por que contratar um profissional?',
-    subtitle: 'A importância de registrar seus momentos com qualidade',
+    title: 'Você está perdendo clientes?',
+    subtitle: 'Sem um site profissional, seu trabalho incrível pode estar passando despercebido.',
   },
   benefits: {
-    title: 'Experiência e Qualidade',
-    subtitle: 'O melhor da fotografia para você',
+    title: 'Por que ter um Site Exclusivo?',
+    subtitle: 'Destaque-se no mercado e valorize sua marca pessoal com uma presença digital forte.',
   },
   portfolio: {
-    title: 'Portfólio',
-    subtitle: 'Confira alguns dos nossos trabalhos recentes em Gramado e região',
-    allWorks: 'Ver Galeria Completa',
+    title: 'Projetos Desenvolvidos',
+    subtitle: 'Veja como transformamos a presença digital de outros fotógrafos com sites incríveis.',
+    allWorks: 'Ver Todos os Projetos',
   },
   services: {
-    title: 'Serviços Fotográficos',
-    subtitle: 'Soluções completas para suas necessidades',
+    title: 'Soluções para Fotógrafos',
+    subtitle: 'Ferramentas e serviços pensados para alavancar sua carreira.',
+  },
+  pricing: {
+    title: 'Escolha o Plano Perfeito',
+    subtitle: 'Planos flexíveis para fotógrafos de todos os tamanhos. Comece pequeno e escale conforme seu negócio cresce.',
+    popular: 'Mais Popular',
+    features: 'Recursos Inclusos',
+    cta: 'Começar Agora',
+    discount: 'Pague com PIX e ganhe 10% de desconto',
+    footerNote: 'Todos os planos incluem suporte técnico, atualizações e garantia de satisfação de 30 dias.',
   },
   testimonials: {
-    title: 'Depoimentos',
-    subtitle: 'O que nossos clientes dizem',
+    title: 'O que dizem os fotógrafos',
+    subtitle: 'Histórias de quem já elevou seu nível profissional com nossos sites.',
   },
   showcase: {
-    title: 'Nossos Estilos',
-    subtitle: 'Conheça as diferentes abordagens e encontre a ideal para você',
-    viewDemo: 'Ver Detalhes',
+    title: 'Modelos Disponíveis',
+    subtitle: 'Escolha o design que mais combina com seu estilo fotográfico.',
+    viewDemo: 'Ver Demonstração',
     photographer: 'Estilo',
     style: 'Categoria',
   },
   cta: {
-    title: 'Vamos criar memórias inesquecíveis juntos?',
+    title: 'Pronto para profissionalizar sua presença online?',
     button: 'Falar no WhatsApp',
   },
   contactForm: {
     title: 'Solicite seu Orçamento',
-    subtitle: 'Preencha o formulário abaixo e entraremos em contato',
+    subtitle: 'Preencha o formulário abaixo para receber uma proposta personalizada para seu site.',
     labels: {
       name: 'Nome completo',
       whatsapp: 'WhatsApp',
-      ensaioType: 'Tipo de ensaio',
+      instagram: 'Instagram (Opcional)',
+      currentSite: 'Site Atual (Opcional)',
       message: 'Mensagem',
     },
     placeholders: {
       name: 'Seu nome',
       whatsapp: '(11) 99999-9999',
-      message: 'Conte um pouco sobre seu projeto...',
+      instagram: '@seu.perfil',
+      currentSite: 'www.seusite.com.br',
+      message: 'Conte sobre seu projeto ou dúvida...',
     },
-    submit: 'Enviar Orçamento',
-    success: 'Orçamento enviado com sucesso!',
-    error: 'Erro ao enviar orçamento. Tente novamente.',
+    submit: 'Enviar Solicitação',
+    success: 'Solicitação enviada com sucesso! Em breve entraremos em contato.',
+    error: 'Erro ao enviar. Por favor, tente novamente.',
   },
   footer: {
     copyright: '©2026 Todos os direitos reservados.',
-    followUs: 'Siga-nos',
+    followUs: 'Redes Sociais',
   },
   navbar: {
     selectLanguage: 'Idioma',
     selectTheme: 'Tema',
   },
   serviceTypes: {
-    ensaios: 'Ensaios',
-    casamentos: 'Casamentos',
-    eventos: 'Eventos',
-    casal: 'Ensaios em Casal',
+    ensaios: 'Landing Page Completa',
+    casamentos: 'Portfólio Minimalista',
+    eventos: 'Sistema de Agendamento',
+    casal: 'Consultoria SEO',
     outro: 'Outro',
   },
 };
@@ -200,6 +226,13 @@ export const en: LanguageTexts = {
   services: {
     title: 'Services',
     subtitle: 'We offer the best options for your special event',
+  },
+  pricing: {
+    title: 'Choose the Perfect Plan',
+    subtitle: 'Flexible plans for photographers of all sizes. Start small and scale as your business grows.',
+    popular: 'Most Popular',
+    features: 'Included Features',
+    cta: 'Start Now',
   },
   testimonials: {
     title: 'Testimonials',
@@ -276,6 +309,15 @@ export const es: LanguageTexts = {
     title: 'Servicios',
     subtitle: 'Ofrecemos las mejores opciones para tu evento especial',
   },
+  pricing: {
+    title: 'Elige el Plan Perfecto',
+    subtitle: 'Planes flexibles para fotógrafos de todos los tamaños. Empieza pequeño y escala a medida que tu negocio crece.',
+    popular: 'Más Popular',
+    features: 'Características Incluidas',
+    cta: 'Empezar Ahora',
+    discount: 'Paga con PIX y obtén 10% de descuento',
+    footerNote: 'Todos los planes incluyen soporte técnico, actualizaciones y garantía de satisfacción de 30 días.',
+  },
   testimonials: {
     title: 'Testimonios',
     subtitle: 'Lo que dicen nuestros clientes',
@@ -297,12 +339,15 @@ export const es: LanguageTexts = {
     labels: {
       name: 'Nombre completo',
       whatsapp: 'WhatsApp',
-      ensaioType: 'Tipo de sesión',
+      instagram: 'Instagram (Opcional)',
+      currentSite: 'Sitio Web Actual (Opcional)',
       message: 'Mensaje',
     },
     placeholders: {
       name: 'Tu nombre',
       whatsapp: '(11) 99999-9999',
+      instagram: '@tu.perfil',
+      currentSite: 'www.tusitioweb.com',
       message: 'Cuéntanos un poco sobre tu proyecto...',
     },
     submit: 'Enviar Presupuesto',

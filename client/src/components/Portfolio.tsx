@@ -15,11 +15,14 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { portfolioImages } from '@/data/portfolio';
-import { pageTexts } from '@/data/config';
+import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
+import { getLanguageTexts } from '@/data/languages';
 import { X } from 'lucide-react';
 
 export default function Portfolio() {
   const { ref, controls } = useScrollReveal();
+  const { theme, language } = useLanguageTheme();
+  const texts = getLanguageTexts(language);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const containerVariants = {
@@ -41,8 +44,10 @@ export default function Portfolio() {
     },
   };
 
+  const isDark = theme === 'dark';
+
   return (
-    <section className="section-gap bg-white">
+    <section className={`section-gap ${isDark ? 'bg-[#0F0F0F]' : 'bg-white'}`}>
       <div className="container">
         {/* Cabeçalho */}
         <motion.div
@@ -51,11 +56,11 @@ export default function Portfolio() {
           animate={controls}
           variants={itemVariants as any}
         >
-          <h2 className="text-heading-1 text-[#1A1A1A] mb-4">
-            {pageTexts.portfolio.title}
+          <h2 className={`text-heading-1 mb-4 ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>
+            {texts.portfolio.title}
           </h2>
-          <p className="text-body text-[#666666] max-w-2xl mx-auto mb-2">
-            {pageTexts.portfolio.subtitle}
+          <p className={`text-body max-w-2xl mx-auto mb-2 ${isDark ? 'text-[#CCCCCC]' : 'text-[#666666]'}`}>
+            {texts.portfolio.subtitle}
           </p>
         </motion.div>
 

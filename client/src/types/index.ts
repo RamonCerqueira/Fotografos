@@ -63,6 +63,8 @@ export interface ContactFormData {
   message: string;
   plan?: string;
   layoutModel?: string;
+  currentSite?: string;
+  instagram?: string;
 }
 
 /**
