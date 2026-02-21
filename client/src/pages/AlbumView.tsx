@@ -1,28 +1,35 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Share2, Heart } from 'lucide-react';
 import { useLocation, useRoute } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
-import { demoPhotographers } from '@/data/demoPortfolios';
+import { getDemoPhotographer } from '@/data/demoPortfolios';
+import { getLanguageTexts } from '@/data/languages';
 import { SEO } from '@/components/SEO';
 
 export default function AlbumView() {
-  const { theme } = useLanguageTheme();
+  const { theme, language } = useLanguageTheme();
+  const texts = getLanguageTexts(language);
   const [, setLocation] = useLocation();
   const [match, params] = useRoute('/demo/:photographerId/album/:portfolioId');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!match || !params) {
     return null;
   }
 
-  const photographer = demoPhotographers[params.photographerId];
+  const photographer = getDemoPhotographer(params.photographerId, language);
 
   if (!photographer) {
     return (
       <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0F0F0F] text-white' : 'bg-white text-[#1A1A1A]'}`}>
         <div className="container text-center">
-          <p className="text-lg mb-6">Fotógrafo não encontrado.</p>
-          <Button onClick={() => setLocation('/')}>Voltar para a página inicial</Button>
+          <p className="text-lg mb-6">{texts.demo.album.photographerNotFound}</p>
+          <Button onClick={() => setLocation('/')}>{texts.demo.album.backToHome}</Button>
         </div>
       </div>
     );
@@ -34,8 +41,8 @@ export default function AlbumView() {
     return (
       <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0F0F0F] text-white' : 'bg-white text-[#1A1A1A]'}`}>
         <div className="container text-center">
-          <p className="text-lg mb-6">Álbum não encontrado.</p>
-          <Button onClick={() => setLocation(`/demo/${photographer.id}`)}>Voltar para o portfólio</Button>
+          <p className="text-lg mb-6">{texts.demo.album.albumNotFound}</p>
+          <Button onClick={() => setLocation(`/demo/${photographer.id}`)}>{texts.demo.album.backToPortfolio}</Button>
         </div>
       </div>
     );

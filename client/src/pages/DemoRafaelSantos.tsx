@@ -1,7 +1,12 @@
-import { demoPhotographers } from '@/data/demoPortfolios';
+import { getDemoPhotographer } from '@/data/demoPortfolios';
 import DemoPage from '@/components/DemoPage';
-
+import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
 
 export default function DemoRafaelSantos() {
-  return <DemoPage photographer={demoPhotographers['rafael-santos']} variant="moderno" />;
+  const { language } = useLanguageTheme();
+  const photographer = getDemoPhotographer('rafael-santos', language);
+
+  if (!photographer) return null;
+
+  return <DemoPage photographer={photographer} variant="moderno" />;
 }

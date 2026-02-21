@@ -1,7 +1,12 @@
-import { demoPhotographers } from '@/data/demoPortfolios';
+import { getDemoPhotographer } from '@/data/demoPortfolios';
 import DemoPage from '@/components/DemoPage';
-
+import { useLanguageTheme } from '@/contexts/LanguageThemeContext';
 
 export default function DemoJulianaCosta() {
-  return <DemoPage photographer={demoPhotographers['juliana-costa']} variant="artistico" />;
+  const { language } = useLanguageTheme();
+  const photographer = getDemoPhotographer('juliana-costa', language);
+
+  if (!photographer) return null;
+
+  return <DemoPage photographer={photographer} variant="artistico" />;
 }

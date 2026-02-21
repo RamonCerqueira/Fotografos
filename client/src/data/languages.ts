@@ -119,13 +119,17 @@ export interface LanguageTexts {
   // Demo Pages
   demo: {
     nav: {
+      home: string;
       portfolio: string;
       services: string;
       about: string;
       contact: string;
+      menu: string;
+      clients: string;
     };
     hero: {
       photography: string;
+      title: string;
       scrollDown: string;
     };
     portfolio: {
@@ -134,17 +138,43 @@ export interface LanguageTexts {
       curation: string;
       viewAll: string;
       viewCollection: string;
+      successCases: string;
     };
     services: {
       whatIOffer: string;
       title: string;
+      subtitle: string;
       process: string;
       solutions: string;
+      premium: string;
+      modernDescription: string;
+      requestQuote: string;
+      learnMore: string;
+      corporate: {
+        headshots: string;
+        events: string;
+        products: string;
+      };
     };
     about: {
       title: string;
       artist: string;
       description: string;
+      stats: {
+        years: string;
+        projects: string;
+        awards: string;
+      };
+      modernTitle: string;
+      modernDescription: string;
+      corporateTitle: string;
+      corporateDescription: string;
+      features: {
+        team: string;
+        resolution: string;
+        coverage: string;
+        support: string;
+      };
     };
     contact: {
       title: string;
@@ -153,11 +183,25 @@ export interface LanguageTexts {
       email: string;
       whatsapp: string;
       schedule: string;
+      letsTalk: string;
+      labels: {
+        email: string;
+        phone: string;
+        social: string;
+      };
     };
     footer: {
       rights: string;
       designedFor: string;
       madeWith: string;
+      quickLinks: string;
+      description: string;
+    };
+    album: {
+      photographerNotFound: string;
+      albumNotFound: string;
+      backToHome: string;
+      backToPortfolio: string;
     };
   };
 }
@@ -251,32 +295,62 @@ export const pt: LanguageTexts = {
   },
   demo: {
     nav: {
+      home: 'Início',
       portfolio: 'Portfólio',
       services: 'Serviços',
       about: 'Sobre',
       contact: 'Contato',
+      menu: 'Menu',
+      clients: 'Clientes',
     },
     hero: {
-      photography: 'Fotografia',
+      photography: 'Fotografia Profissional',
+      title: 'Imagem é tudo no mundo dos negócios.',
       scrollDown: 'Role para baixo',
     },
     portfolio: {
-      selectedWorks: 'Trabalhos Selecionados',
+      selectedWorks: 'Portfólio Selecionado',
       title: 'Portfólio',
-      curation: 'Uma curadoria dos momentos mais emocionantes e inesquecíveis.',
-      viewAll: 'Ver Portfólio Completo',
+      curation: 'Momentos únicos, memórias eternas',
+      viewAll: 'Ver Portfólio',
       viewCollection: 'Ver Coleção',
+      successCases: 'Cases de Sucesso',
     },
     services: {
-      whatIOffer: 'O que ofereço',
-      title: 'Serviços Exclusivos',
+      whatIOffer: 'O que fazemos',
+      title: 'Serviços Premium',
+      subtitle: 'Serviços adaptados para a necessidade da sua empresa, com agilidade e qualidade.',
       process: 'O PROCESSO',
       solutions: 'Nossas Soluções',
+      premium: 'Serviços Premium',
+      modernDescription: 'Soluções fotográficas de alto padrão para quem não aceita menos que a perfeição. Cada serviço é executado com maestria técnica e visão artística.',
+      requestQuote: 'Solicitar Orçamento',
+      learnMore: 'Saiba mais',
+      corporate: {
+        headshots: 'Retratos Corporativos',
+        events: 'Eventos Empresariais',
+        products: 'Fotografia de Produtos',
+      },
     },
     about: {
       title: 'Sobre a Fotógrafa',
       artist: 'Sobre a Artista',
       description: 'Capturando a essência de cada história de amor.',
+      stats: {
+        years: 'Anos de Exp.',
+        projects: 'Projetos',
+        awards: 'Prêmios',
+      },
+      modernTitle: 'Além da Imagem.',
+      modernDescription: 'Nosso objetivo é transformar o ordinário em extraordinário. Utilizamos técnicas avançadas de iluminação e composição para criar narrativas visuais impactantes que resistem ao teste do tempo.',
+      corporateTitle: 'Excelência em Fotografia Corporativa',
+      corporateDescription: 'Com mais de 10 anos de experiência no mercado, nossa equipe entende a importância de uma imagem sólida para sua empresa. Trabalhamos com equipamentos de última geração e uma visão estratégica para alinhar cada clique aos valores da sua marca.',
+      features: {
+        team: 'Equipe Especializada',
+        resolution: 'Entrega em Alta Resolução',
+        coverage: 'Cobertura Nacional',
+        support: 'Atendimento Personalizado',
+      },
     },
     contact: {
       title: 'Vamos criar algo belo?',
@@ -285,11 +359,25 @@ export const pt: LanguageTexts = {
       email: 'Enviar E-mail',
       whatsapp: 'Me manda um zap!',
       schedule: 'Agendar Reunião',
+      letsTalk: 'VAMOS CONVERSAR',
+      labels: {
+        email: 'E-mail',
+        phone: 'Telefone',
+        social: 'Social',
+      },
     },
     footer: {
       rights: 'Todos os direitos reservados.',
       designedFor: 'Design para',
       madeWith: 'Feito com amor, cores e criatividade.',
+      quickLinks: 'Links Rápidos',
+      description: 'Transformando a identidade da sua empresa através de imagens profissionais de alto impacto.',
+    },
+    album: {
+      photographerNotFound: 'Fotógrafo não encontrado.',
+      albumNotFound: 'Álbum não encontrado.',
+      backToHome: 'Voltar para a página inicial',
+      backToPortfolio: 'Voltar para o portfólio',
     },
   },
 };
@@ -383,13 +471,17 @@ export const en: LanguageTexts = {
   },
   demo: {
     nav: {
+      home: 'Home',
       portfolio: 'Portfolio',
       services: 'Services',
       about: 'About',
       contact: 'Contact',
+      menu: 'Menu',
+      clients: 'Clients',
     },
     hero: {
-      photography: 'Photography',
+      photography: 'Professional Photography',
+      title: 'Image is everything in the business world.',
       scrollDown: 'Scroll down',
     },
     portfolio: {
@@ -398,17 +490,43 @@ export const en: LanguageTexts = {
       curation: 'A curation of the most emotional and unforgettable moments.',
       viewAll: 'View Full Portfolio',
       viewCollection: 'View Collection',
+      successCases: 'Success Cases',
     },
     services: {
       whatIOffer: 'What I offer',
       title: 'Exclusive Services',
+      subtitle: 'Services adapted to your company needs, with agility and quality.',
       process: 'THE PROCESS',
       solutions: 'Our Solutions',
+      premium: 'Premium Services',
+      modernDescription: 'High-end photographic solutions for those who accept nothing less than perfection. Each service is executed with technical mastery and artistic vision.',
+      requestQuote: 'Request Quote',
+      learnMore: 'Learn more',
+      corporate: {
+        headshots: 'Corporate Headshots',
+        events: 'Corporate Events',
+        products: 'Product Photography',
+      },
     },
     about: {
       title: 'About the Photographer',
       artist: 'About the Artist',
       description: 'Capturing the essence of every love story.',
+      stats: {
+        years: 'Years Exp.',
+        projects: 'Projects',
+        awards: 'Awards',
+      },
+      modernTitle: 'Beyond the Image.',
+      modernDescription: 'Our goal is to transform the ordinary into the extraordinary. We use advanced lighting and composition techniques to create impactful visual narratives that stand the test of time.',
+      corporateTitle: 'Excellence in Corporate Photography',
+      corporateDescription: 'With over 10 years of market experience, our team understands the importance of a solid image for your company. We work with state-of-the-art equipment and a strategic vision to align every click with your brand values.',
+      features: {
+        team: 'Specialized Team',
+        resolution: 'High Resolution Delivery',
+        coverage: 'National Coverage',
+        support: 'Personalized Service',
+      },
     },
     contact: {
       title: 'Let\'s create something beautiful?',
@@ -417,11 +535,25 @@ export const en: LanguageTexts = {
       email: 'Send Email',
       whatsapp: 'Send a text!',
       schedule: 'Schedule Meeting',
+      letsTalk: 'LET\'S TALK',
+      labels: {
+        email: 'E-mail',
+        phone: 'Phone',
+        social: 'Social',
+      },
     },
     footer: {
       rights: 'All rights reserved.',
       designedFor: 'Designed for',
       madeWith: 'Made with love, colors and creativity.',
+      quickLinks: 'Quick Links',
+      description: 'Transforming your company identity through high-impact professional images.',
+    },
+    album: {
+      photographerNotFound: 'Photographer not found.',
+      albumNotFound: 'Album not found.',
+      backToHome: 'Back to home',
+      backToPortfolio: 'Back to portfolio',
     },
   },
 };
@@ -515,13 +647,17 @@ export const es: LanguageTexts = {
   },
   demo: {
     nav: {
+      home: 'Inicio',
       portfolio: 'Portafolio',
       services: 'Servicios',
       about: 'Sobre',
       contact: 'Contacto',
+      menu: 'Menú',
+      clients: 'Clientes',
     },
     hero: {
-      photography: 'Fotografía',
+      photography: 'Fotografía Profesional',
+      title: 'La imagen lo es todo en el mundo de los negocios.',
       scrollDown: 'Desliza hacia abajo',
     },
     portfolio: {
@@ -530,17 +666,43 @@ export const es: LanguageTexts = {
       curation: 'Una selección de los momentos más emotivos e inolvidables.',
       viewAll: 'Ver Portafolio Completo',
       viewCollection: 'Ver Colección',
+      successCases: 'Casos de Éxito',
     },
     services: {
       whatIOffer: 'Lo que ofrezco',
       title: 'Servicios Exclusivos',
+      subtitle: 'Servicios adaptados a las necesidades de su empresa, con agilidad y calidad.',
       process: 'EL PROCESO',
       solutions: 'Nuestras Soluciones',
+      premium: 'Servicios Premium',
+      modernDescription: 'Soluciones fotográficas de alto nivel para quienes no aceptan menos que la perfección. Cada servicio se ejecuta con maestría técnica y visión artística.',
+      requestQuote: 'Solicitar Presupuesto',
+      learnMore: 'Saber más',
+      corporate: {
+        headshots: 'Retratos Corporativos',
+        events: 'Eventos Empresariales',
+        products: 'Fotografía de Productos',
+      },
     },
     about: {
       title: 'Sobre la Fotógrafa',
       artist: 'Sobre la Artista',
       description: 'Capturando la esencia de cada historia de amor.',
+      stats: {
+        years: 'Años de Exp.',
+        projects: 'Proyectos',
+        awards: 'Premios',
+      },
+      modernTitle: 'Más allá de la Imagen.',
+      modernDescription: 'Nuestro objetivo es transformar lo ordinario en extraordinario. Utilizamos técnicas avanzadas de iluminación y composición para crear narrativas visuales impactantes que resisten la prueba del tiempo.',
+      corporateTitle: 'Excelencia en Fotografía Corporativa',
+      corporateDescription: 'Con más de 10 años de experiencia en el mercado, nuestro equipo entiende la importancia de una imagen sólida para su empresa. Trabajamos con equipos de última generación y una visión estratégica para alinear cada clic con los valores de su marca.',
+      features: {
+        team: 'Equipo Especializado',
+        resolution: 'Entrega en Alta Resolución',
+        coverage: 'Cobertura Nacional',
+        support: 'Atención Personalizada',
+      },
     },
     contact: {
       title: '¿Creamos algo hermoso?',
@@ -549,11 +711,25 @@ export const es: LanguageTexts = {
       email: 'Enviar Email',
       whatsapp: '¡Envía un mensaje!',
       schedule: 'Agendar Reunión',
+      letsTalk: 'HABLEMOS',
+      labels: {
+        email: 'E-mail',
+        phone: 'Teléfono',
+        social: 'Social',
+      },
     },
     footer: {
       rights: 'Todos los derechos reservados.',
       designedFor: 'Diseñado para',
       madeWith: 'Hecho con amor, colores y creatividad.',
+      quickLinks: 'Enlaces Rápidos',
+      description: 'Transformando la identidad de su empresa a través de imágenes profesionales de alto impacto.',
+    },
+    album: {
+      photographerNotFound: 'Fotógrafo no encontrado.',
+      albumNotFound: 'Álbum no encontrado.',
+      backToHome: 'Volver a la página de inicio',
+      backToPortfolio: 'Volver al portafolio',
     },
   },
 };

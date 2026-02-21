@@ -101,6 +101,27 @@ export interface PageConfig {
 }
 
 // ============================================
+// Tipos de Demo
+// ============================================
+
+export interface DemoPhotographerData {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  specialty: string;
+  portfolio: PortfolioImage[];
+  services: Service[];
+  testimonials: Testimonial[];
+  heroImage?: string
+  heroOverlayOpacity?: number
+  colors: {
+    primary: string;
+    accent: string;
+  };
+}
+
+// ============================================
 // Tipos de Animação
 // ============================================
 
