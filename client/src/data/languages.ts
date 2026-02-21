@@ -329,13 +329,6 @@ export const en: LanguageTexts = {
     discount: 'Pay with PIX and get 10% off',
     footerNote: 'All plans include technical support, updates and 30-day satisfaction guarantee.',
   },
-    
-    title: 'Choose the Perfect Plan',
-    subtitle: 'Flexible plans for photographers of all sizes. Start small and scale as your business grows.',
-    popular: 'Most Popular',
-    features: 'Included Features',
-    cta: 'Start Now',
-  },
   testimonials: {
     title: 'Testimonials',
     subtitle: 'What our clients say',
@@ -357,12 +350,16 @@ export const en: LanguageTexts = {
     labels: {
       name: 'Full name',
       whatsapp: 'WhatsApp',
-      ensaioType: 'Type of session',
+      instagram: 'Instagram (Optional)',
+      currentSite: 'Current Website (Optional)',
       message: 'Message',
+      ensaioType: 'Type of session',
     },
     placeholders: {
       name: 'Your name',
       whatsapp: '(11) 99999-9999',
+      instagram: '@your.profile',
+      currentSite: 'www.yourwebsite.com',
       message: 'Tell us a bit about your project...',
     },
     submit: 'Send Quote',
